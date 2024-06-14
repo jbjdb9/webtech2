@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Core\Request;
 use App\Core\Response;
 
-class UserController
+class ProfileController
 {
     public function index(Request $request, Response $response, $params)
     {
