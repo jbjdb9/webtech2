@@ -21,6 +21,16 @@ class Router
         $this->addRoute('DELETE', $path, $handler);
     }
 
+    /**
+     * Adds a new route to the router.
+     *
+     * This method converts paths with parameters (like `/user/{id}`) into regular expressions
+     * and stores the route in the `$routes` array.
+     *
+     * @param string $method The HTTP method of the route (GET, POST, DELETE, etc.).
+     * @param string $path The path of the route, possibly containing parameters (like `/user/{id}`).
+     * @param array $handler An array containing the class and method that will handle the request.
+     */
     private function addRoute($method, $path, $handler)
     {
         $pattern = preg_replace('#\{([a-z]+)}#', '(?P<$1>[^/]+)', $path);
@@ -29,6 +39,18 @@ class Router
         $this->routes[] = compact('method', 'pattern', 'handler');
     }
 
+    /**
+     * Dispatches the request to the appropriate route handler.
+     *
+     * This method matches the request path against the route patterns and extracts the parameters.
+     * It then creates an instance of the handler class and calls the handler method, passing the request,
+     * response, and parameters to it.
+     *
+     * If no matching route is found, it sets the response status code to 404 and the content to 'Not Found'.
+     *
+     * @param Request $request The request object.
+     * @param Response $response The response object.
+     */
     public function dispatch(Request $request, Response $response)
     {
         foreach ($this->routes as $route) {
