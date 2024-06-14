@@ -23,7 +23,10 @@ class TemplateEngine
             $templateContent = str_replace(array_keys($blocks), array_values($blocks), $parentContent);
         }
 
-        return $this->replaceParams($templateContent, $params);
+        $templateContent = $this->replaceParams($templateContent, $params);
+        $templateContent = $this->evaluateExpressions($templateContent);
+
+        return $templateContent;
     }
 
     protected function getBlocks($content)
@@ -62,5 +65,24 @@ class TemplateEngine
         }
 
         return $content;
+    }
+
+    protected function evaluateExpressions($content)
+    {
+        return preg_replace_callback('/{{ (.*?) }}/', function ($matches) {
+            $expression = $matches[1];
+
+            // Sanitize the expression
+            $expression = preg_replace('/[^0-9+\-.*\/() ]/', '', $expression);
+
+            // Validate the expression
+            if (preg_match('/^([0-9+\-.*\/() ])+$/', $expression)) {
+                // Add a return statement to the evaluated string
+                return eval('return ' . $expression . ';');
+            }
+
+            // If the expression is not valid, return the original string
+            return $matches[0];
+        }, $content);
     }
 }

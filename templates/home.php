@@ -5,5 +5,5 @@
 {% endblock %}
 
 {% block body %}
-<p>This is the body.</p>
+<p>Your current score is: {{ score }}</p>
 {% endblock %}
