@@ -7,6 +7,12 @@ class Response
     private $statusCode = 200;
     private $headers = [];
     private $content;
+    private $engine;
+
+    public function __construct()
+    {
+        $this->engine = new TemplateEngine(__DIR__ . '/../../templates');
+    }
 
     public function setStatusCode($code)
     {
@@ -18,12 +24,10 @@ class Response
         $this->content = $content;
     }
 
-    public function setView($template, $params = [])
+    public function setTemplate($template, $params = [])
     {
-        $engine = new TemplateEngine(__DIR__ . '/../View');
-        $this->content = $engine->render($template, $params);
+        $this->content = $this->engine->render($template, $params);
     }
-
 
     public function send()
     {

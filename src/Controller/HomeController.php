@@ -9,6 +9,9 @@ class HomeController
 {
     public function index(Request $request, Response $response)
     {
-        $response->setView('home.php');
+        // Set the template and parameters for the response
+        $response->setTemplate('home.php', [
+            'controller_name' => 'HomeController',
+        ]);
     }
 }
