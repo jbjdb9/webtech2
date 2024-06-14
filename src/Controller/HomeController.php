@@ -14,7 +14,6 @@ class HomeController
 
         // Set the template and parameters for the response
         $response->setTemplate('home.php', [
-            'controller_name' => 'HomeController',
             'username' => $username,
             'score' => $score
         ]);

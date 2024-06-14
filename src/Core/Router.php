@@ -23,16 +23,22 @@ class Router
 
     private function addRoute($method, $path, $handler)
     {
-        $this->routes[] = compact('method', 'path', 'handler');
+        $pattern = preg_replace('#\{([a-z]+)}#', '(?P<$1>[^/]+)', $path);
+        $pattern = '#^' . $pattern . '$#';
+
+        $this->routes[] = compact('method', 'pattern', 'handler');
     }
 
     public function dispatch(Request $request, Response $response)
     {
         foreach ($this->routes as $route) {
-            if ($route['method'] === $request->getMethod() && $route['path'] === $request->getPath()) {
-                list($class, $method) = $route['handler'];
-                (new $class)->$method($request, $response);
-                return;
+            if ($route['method'] === $request->getMethod()) {
+                if (preg_match($route['pattern'], $request->getPath(), $matches)) {
+                    $params = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
+                    list($class, $method) = $route['handler'];
+                    (new $class)->$method($request, $response, $params);
+                    return;
+                }
             }
         }
 

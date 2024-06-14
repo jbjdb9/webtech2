@@ -24,6 +24,15 @@ class Response
         $this->content = $content;
     }
 
+    /**
+     * Sets the content of the response to a rendered template.
+     *
+     * This method uses the TemplateEngine to render a template with the given parameters,
+     * and sets the content of the response to the rendered template.
+     *
+     * @param string $template The name of the template to render.
+     * @param array $params An optional array of parameters to use in the template.
+     */
     public function setTemplate($template, $params = [])
     {
         $this->content = $this->engine->render($template, $params);
