@@ -16,6 +16,13 @@ class UserController
             'email' => 'john.doe@example.com',
         ];
 
+        if (!$user) {
+            $response->setStatusCode(404);
+            $response->setContent('User not found');
+            $response->send();
+            return;
+        }
+
         $response->setTemplate('profile.php', $user);
     }
 }
