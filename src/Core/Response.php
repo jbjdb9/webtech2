@@ -18,6 +18,13 @@ class Response
         $this->content = $content;
     }
 
+    public function setView($template, $params = [])
+    {
+        $engine = new TemplateEngine(__DIR__ . '/../View');
+        $this->content = $engine->render($template, $params);
+    }
+
+
     public function send()
     {
         http_response_code($this->statusCode);
