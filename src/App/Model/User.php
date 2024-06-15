@@ -21,6 +21,9 @@ class User {
             return null;
         }
     }
+    public function getPassword() {
+        return $this->password;
+    }
     public function setPassword($password) {
         $this->password = password_hash($password, PASSWORD_DEFAULT);
     }

@@ -14,7 +14,7 @@ class Request
         $this->method = $_SERVER['REQUEST_METHOD'];
         $this->path = strtok($_SERVER['REQUEST_URI'], '?');
         $this->queryParams = $_GET;
-        $this->body = json_decode(file_get_contents('php://input'), true);
+        $this->body = $_POST;
     }
 
     public function getMethod()
@@ -35,5 +35,15 @@ class Request
     public function getBody()
     {
         return $this->body;
+    }
+
+    public function isPost()
+    {
+        return $this->method === 'POST';
+    }
+
+    public function getPost(string $string)
+    {
+        return $this->body[$string] ?? null;
     }
 }
