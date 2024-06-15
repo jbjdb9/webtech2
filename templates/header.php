@@ -1,0 +1,1 @@
+<h1>Welcome to the Trading Card Game, {{ username }}</h1>

@@ -10,6 +10,8 @@ $request = new Request();
 $response = new Response();
 $router = new Router();
 
-require_once __DIR__ . '/../config/routes.php';
+$router = require_once __DIR__ . '/../config/routes.php';
 
 $router->dispatch($request, $response);
+
+$response->send();

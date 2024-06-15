@@ -7,6 +7,12 @@ class Response
     private $statusCode = 200;
     private $headers = [];
     private $content;
+    private $engine;
+
+    public function __construct()
+    {
+        $this->engine = new TemplateEngine(__DIR__ . '/../../templates');
+    }
 
     public function setStatusCode($code)
     {
@@ -16,6 +22,20 @@ class Response
     public function setContent($content)
     {
         $this->content = $content;
+    }
+
+    /**
+     * Sets the content of the response to a rendered template.
+     *
+     * This method uses the TemplateEngine to render a template with the given parameters,
+     * and sets the content of the response to the rendered template.
+     *
+     * @param string $template The name of the template to render.
+     * @param array $params An optional array of parameters to use in the template.
+     */
+    public function setTemplate($template, $params = [])
+    {
+        $this->content = $this->engine->render($template, $params);
     }
 
     public function send()
