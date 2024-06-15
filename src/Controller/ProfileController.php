@@ -4,17 +4,20 @@ namespace App\Controller;
 
 use App\Core\Request;
 use App\Core\Response;
+use App\Services\UserService;
 
 class ProfileController
 {
+    private $userService;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
     public function index(Request $request, Response $response, $params)
     {
-        // TODO: dummy data, moet aan database gekoppeld worden
-        $user = [
-            'id' => $params['id'],
-            'name' => 'John Doe',
-            'email' => 'john.doe@example.com',
-        ];
+        $user = $this->userService->getUser($params['id']);
 
         if (!$user) {
             $response->setStatusCode(404);

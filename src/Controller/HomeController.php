@@ -9,6 +9,7 @@ class HomeController
 {
     public function index(Request $request, Response $response)
     {
+        // Dummy data for now
         $username = 'John Doe';
         $score = 100;
 
