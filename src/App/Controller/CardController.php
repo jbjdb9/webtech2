@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Controller;
+namespace App\App\Controller;
 
-use App\Core\Request;
-use App\Core\Response;
+use App\Framework\Request;
+use App\Framework\Response;
 
 class CardController
 {

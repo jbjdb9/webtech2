@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Middleware;
+namespace App\App\Middleware;
 
-use App\Core\Request;
-use App\Core\Response;
+use App\Framework\Request;
+use App\Framework\Response;
 
 class AuthMiddleware
 {

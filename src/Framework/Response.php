@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Core;
+namespace App\Framework;
 
 class Response
 {
@@ -11,7 +11,7 @@ class Response
 
     public function __construct()
     {
-        $this->engine = new TemplateEngine(__DIR__ . '/../../templates');
+        $this->engine = new TemplateEngine(__DIR__ . '/../App/View');
     }
 
     public function setStatusCode($code)

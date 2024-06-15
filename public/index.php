@@ -2,11 +2,11 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use App\Core\Router;
-use App\Core\Request;
-use App\Core\Response;
-use App\Container\Container;
-use App\Services\UserService;
+use App\App\Services\UserService;
+use App\Framework\Container;
+use App\Framework\Request;
+use App\Framework\Response;
+use App\Framework\Router;
 
 // Initialize the container
 $container = new Container();

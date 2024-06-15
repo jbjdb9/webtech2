@@ -1,10 +1,10 @@
 <?php
 
-use App\Controller\CardController;
-use App\Controller\HomeController;
-use App\Controller\ProfileController;
-use App\Core\Router;
-use App\Middleware\AuthMiddleware;
+use App\App\Controller\CardController;
+use App\App\Controller\HomeController;
+use App\App\Controller\ProfileController;
+use App\App\Middleware\AuthMiddleware;
+use App\Framework\Router;
 
 $router = new Router();
 

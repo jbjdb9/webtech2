@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Controller;
+namespace App\App\Controller;
 
-use App\Core\Request;
-use App\Core\Response;
-use App\Services\UserService;
+use App\App\Services\UserService;
+use App\Framework\Request;
+use App\Framework\Response;
 
 class ProfileController
 {
