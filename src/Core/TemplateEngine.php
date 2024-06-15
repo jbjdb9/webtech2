@@ -117,13 +117,10 @@ class TemplateEngine
             // Sanitize the expression
             $expression = preg_replace('/[^0-9+\-.*\/() ]/', '', $expression);
 
-            // Validate the expression
             if (preg_match('/^([0-9+\-.*\/() ])+$/', $expression)) {
-                // Add a return statement to the evaluated string
                 return eval('return ' . $expression . ';');
             }
 
-            // If the expression is not valid, return the original string
             return $matches[0];
         }, $content);
     }
