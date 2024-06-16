@@ -8,10 +8,8 @@ use App\Framework\Request;
 use App\Framework\Response;
 use App\Framework\Router;
 
-// Initialize the container
 $container = new Container();
 
-// Add UserService to the container
 $container->set(UserService::class, function() {
     return new UserService();
 });
@@ -19,7 +17,6 @@ $container->set(UserService::class, function() {
 $request = new Request();
 $response = new Response();
 
-// Pass the container to the Router
 $router = new Router($container);
 
 $router = require_once __DIR__ . '/../config/routes.php';

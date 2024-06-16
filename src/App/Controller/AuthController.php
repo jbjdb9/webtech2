@@ -4,6 +4,7 @@ namespace App\App\Controller;
 
 use App\App\Database\ORM;
 use App\App\Model\User;
+use App\App\Model\UserRole;
 use App\Framework\Request;
 use App\Framework\Response;
 
@@ -36,6 +37,11 @@ class AuthController
             }
 
             $_SESSION['userId'] = $user->getId();
+            $_SESSION['role'] = UserRole::getRoleNameByUserId($user->getId());
+
+            error_log('User id: ' . $_SESSION['userId']);
+            error_log('User role: ' . $_SESSION['role']);
+
             if (empty($_SESSION['userId'])) {
                 error_log('Login failed: unable to store user ID in session');
                 $response->setTemplate('login.php');
@@ -62,7 +68,7 @@ class AuthController
             }
 
             // Create a new User object with the provided username, email, and password
-            $user = new User($username, $email, $password);
+            $user = new User(null, $username, $email, $password, false);
 
             if (ORM::createUser($user)) {
                 $response->redirect('/login');

@@ -13,7 +13,6 @@ class HomeController
         $username = 'John Doe';
         $score = 100;
 
-        // Set the template and parameters for the response
         $response->setTemplate('home.php', [
             'username' => $username,
             'score' => $score
