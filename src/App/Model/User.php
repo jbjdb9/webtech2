@@ -7,17 +7,14 @@ class User {
     private $id;
     private $username;
     private $email;
-    private $password; // This will store the hashed password
+    private $password;
 
     public function login($usernameOrEmail, $password) {
-        // Retrieve the user from the database using the ORM
         $user = ORM::getUserByUsernameOrEmail($usernameOrEmail);
 
         if ($user && password_verify($password, $user->getPassword())) {
-            // Password is valid, return the user
             return $user;
         } else {
-            // Invalid credentials
             return null;
         }
     }
@@ -29,6 +26,9 @@ class User {
     }
     public function getId() {
         return $this->id;
+    }
+    public function find($id) {
+        return ORM::getUserById($id);
     }
     public function setId($id) {
         $this->id = $id;

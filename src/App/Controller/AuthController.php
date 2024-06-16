@@ -18,16 +18,16 @@ class AuthController
             $user = (new User())->login($usernameOrEmail, $password);
 
             if ($user) {
-                // User is authenticated successfully
-                // Redirect to home page
+                // Start a session and store the user's ID and roles in it
+                session_start();
+                $_SESSION['userId'] = $user->getId();
+                $_SESSION['roles'] = $user->getRoles();
+
                 $response->redirect('/home');
             } else {
-                // Authentication failed
-                // Re-render the login page with an error message
                 $response->setTemplate('login.php', ['error' => 'Invalid username or email/password combination.']);
             }
         } else {
-            // Render the login page
             $response->setTemplate('login.php');
         }
     }
@@ -39,10 +39,7 @@ class AuthController
             $email = $request->getPost('email');
             $password = $request->getPost('password');
 
-            // Validate the input
             if (empty($username) || empty($email) || empty($password)) {
-                // One or more fields are empty
-                // Re-render the register page with an error message
                 $response->setTemplate('register.php', ['error' => 'All fields are required.']);
                 return;
             }
@@ -53,17 +50,20 @@ class AuthController
             $user->setPassword($password);
 
             if (ORM::saveUser($user)) {
-                // User is registered successfully
-                // Redirect to login page
                 $response->redirect('/login');
             } else {
-                // Registration failed
-                // Re-render the register page with an error message
                 $response->setTemplate('register.php', ['error' => 'Registration failed. Please try again.']);
             }
         } else {
-            // Render the register page
             $response->setTemplate('register.php');
         }
+    }
+
+    public function logout(Request $request, Response $response)
+    {
+        session_start();
+        session_destroy();
+
+        $response->redirect('/login');
     }
 }

@@ -2,16 +2,17 @@
 
 namespace App\App\Middleware;
 
-use App\Framework\Request;
-use App\Framework\Response;
-
 class AuthMiddleware
 {
-    public function __invoke(Request $request, Response $response, callable $next)
+    public function __invoke($request, $response, $next, $role)
     {
-        // Auth logic here
+        session_start();
 
-        // Call the next middleware/controller
+        if (!isset($_SESSION['roles']) || !in_array($role, $_SESSION['roles'])) {
+            header('Location: /login');
+            exit();
+        }
+
         return $next($request, $response);
     }
 }
