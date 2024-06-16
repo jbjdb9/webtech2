@@ -63,4 +63,9 @@ class Response
         header('Location: ' . $string);
         exit;
     }
+
+    public function addData(string $key, $value)
+    {
+        $this->data[$key] = $value;
+    }
 }
