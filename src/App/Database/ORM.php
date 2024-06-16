@@ -21,6 +21,16 @@ class ORM {
         }
         return self::$pdo;
     }
+    public static function getUserById($id) {
+        $stmt = self::getPdo()->prepare('SELECT * FROM users WHERE id = :id');
+        $stmt->execute(['id' => $id]);
+        return $stmt->fetch(PDO::FETCH_OBJ);
+    }
+    public static function getUserByUsernameOrEmail($usernameOrEmail) {
+        $stmt = self::getPdo()->prepare('SELECT * FROM users WHERE username = :usernameOrEmail OR email = :usernameOrEmail');
+        $stmt->execute(['usernameOrEmail' => $usernameOrEmail]);
+        return $stmt->fetch(PDO::FETCH_OBJ);
+    }
     public static function saveUser(User $user)
     {
         try {
@@ -36,9 +46,29 @@ class ORM {
             return false;
         }
     }
-    public static function getUserByUsernameOrEmail($usernameOrEmail) {
-        $stmt = self::getPdo()->prepare('SELECT * FROM users WHERE username = :usernameOrEmail OR email = :usernameOrEmail');
-        $stmt->execute(['usernameOrEmail' => $usernameOrEmail]);
-        return $stmt->fetch(PDO::FETCH_OBJ);
+    public static function updateUser(User $user)
+    {
+        try {
+            $stmt = self::getPdo()->prepare('UPDATE users SET username = :username, email = :email, password = :password WHERE id = :id');
+            return $stmt->execute([
+                'id' => $user->getId(),
+                'username' => $user->getUsername(),
+                'email' => $user->getEmail(),
+                'password' => $user->getPassword()
+            ]);
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+            return false;
+        }
+    }
+    public static function deleteUser(User $user)
+    {
+        try {
+            $stmt = self::getPdo()->prepare('DELETE FROM users WHERE id = :id');
+            return $stmt->execute(['id' => $user->getId()]);
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+            return false;
+        }
     }
 }
