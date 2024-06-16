@@ -21,4 +21,6 @@ $router->get('/logout', [AuthController::class, 'logout']);
 $router->get('/register', [AuthController::class, 'register']);
 $router->post('/register', [AuthController::class, 'register']);
 
+$router->addMiddleware(new AuthMiddleware());
+
 return $router;

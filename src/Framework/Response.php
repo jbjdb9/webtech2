@@ -8,6 +8,7 @@ class Response
     private $headers = [];
     private $content;
     private $engine;
+    private $data = [];
 
     public function __construct()
     {
@@ -23,6 +24,15 @@ class Response
     {
         $this->content = $content;
     }
+    public function setData($key, $value)
+    {
+        $this->data[$key] = $value;
+    }
+
+    public function getData($key)
+    {
+        return $this->data[$key] ?? null;
+    }
 
     /**
      * Sets the content of the response to a rendered template.
@@ -35,6 +45,7 @@ class Response
      */
     public function setTemplate($template, $params = [])
     {
+        $params = array_merge($this->data, $params);
         $this->content = $this->engine->render($template, $params);
     }
 

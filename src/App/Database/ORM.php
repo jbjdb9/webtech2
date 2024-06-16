@@ -29,9 +29,13 @@ class ORM {
     public static function getUserByUsernameOrEmail($usernameOrEmail) {
         $stmt = self::getPdo()->prepare('SELECT * FROM users WHERE username = :usernameOrEmail OR email = :usernameOrEmail');
         $stmt->execute(['usernameOrEmail' => $usernameOrEmail]);
-        return $stmt->fetch(PDO::FETCH_OBJ);
+        $user = $stmt->fetch(PDO::FETCH_OBJ);
+        if ($user) {
+            return new User($user->id, $user->username, $user->email, $user->password, true);
+        }
+        return null;
     }
-    public static function saveUser(User $user)
+    public static function createUser(User $user)
     {
         try {
             $stmt = self::getPdo()->prepare('INSERT INTO users (username, email, password) VALUES (:username, :email, :password)');
@@ -41,7 +45,6 @@ class ORM {
                 'password' => $user->getPassword()
             ]);
         } catch (PDOException $e) {
-            // Print PDOException message
             echo $e->getMessage();
             return false;
         }

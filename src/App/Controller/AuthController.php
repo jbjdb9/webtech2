@@ -15,18 +15,35 @@ class AuthController
             $usernameOrEmail = $request->getPost('usernameOrEmail');
             $password = $request->getPost('password');
 
-            $user = (new User())->login($usernameOrEmail, $password);
-
-            if ($user) {
-                // Start a session and store the user's ID and roles in it
-                session_start();
-                $_SESSION['userId'] = $user->getId();
-                $_SESSION['roles'] = $user->getRoles();
-
-                $response->redirect('/home');
-            } else {
-                $response->setTemplate('login.php', ['error' => 'Invalid username or email/password combination.']);
+            if (empty($usernameOrEmail) || empty($password)) {
+                error_log('Login failed: username or password not provided');
+                $response->setTemplate('login.php');
+                return;
             }
+
+            $user = ORM::getUserByUsernameOrEmail($usernameOrEmail);
+
+            if (!$user) {
+                error_log('Login failed: no user found with provided username or email');
+                $response->setTemplate('login.php');
+                return;
+            }
+
+            if (!$user->verifyPassword($password)) {
+                error_log('Login failed: provided password does not match stored password');
+                $response->setTemplate('login.php');
+                return;
+            }
+
+            $_SESSION['userId'] = $user->getId();
+            if (empty($_SESSION['userId'])) {
+                error_log('Login failed: unable to store user ID in session');
+                $response->setTemplate('login.php');
+                return;
+            }
+
+            error_log('User logged in, userId: ' . $_SESSION['userId']);
+            $response->redirect('/home');
         } else {
             $response->setTemplate('login.php');
         }
@@ -44,12 +61,10 @@ class AuthController
                 return;
             }
 
-            $user = new User();
-            $user->setUsername($username);
-            $user->setEmail($email);
-            $user->setPassword($password);
+            // Create a new User object with the provided username, email, and password
+            $user = new User($username, $email, $password);
 
-            if (ORM::saveUser($user)) {
+            if (ORM::createUser($user)) {
                 $response->redirect('/login');
             } else {
                 $response->setTemplate('register.php', ['error' => 'Registration failed. Please try again.']);
