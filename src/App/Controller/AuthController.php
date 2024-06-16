@@ -16,43 +16,42 @@ class AuthController
             $usernameOrEmail = $request->getPost('usernameOrEmail');
             $password = $request->getPost('password');
 
-            if (empty($usernameOrEmail) || empty($password)) {
-                error_log('Login failed: username or password not provided');
-                $response->setTemplate('login.php');
-                return;
-            }
+//            if (empty($usernameOrEmail) || empty($password)) {
+//                $this->handleFailedLogin($response, 'Login failed: username or password not provided');
+//                return;
+//            }
 
             $user = ORM::getUserByUsernameOrEmail($usernameOrEmail);
 
             if (!$user) {
-                error_log('Login failed: no user found with provided username or email');
-                $response->setTemplate('login.php');
+                $this->handleFailedLogin($response, 'Invalid username or email');
                 return;
             }
 
             if (!$user->verifyPassword($password)) {
-                error_log('Login failed: provided password does not match stored password');
-                $response->setTemplate('login.php');
+                $this->handleFailedLogin($response, 'Incorrect password');
                 return;
             }
 
             $_SESSION['userId'] = $user->getId();
             $_SESSION['role'] = UserRole::getRoleNameByUserId($user->getId());
 
-            error_log('User id: ' . $_SESSION['userId']);
-            error_log('User role: ' . $_SESSION['role']);
+//            if (empty($_SESSION['userId'])) {
+//                $this->handleFailedLogin($response, 'Login failed: unable to store user ID in session');
+//                return;
+//            }
 
-            if (empty($_SESSION['userId'])) {
-                error_log('Login failed: unable to store user ID in session');
-                $response->setTemplate('login.php');
-                return;
-            }
-
-            error_log('User logged in, userId: ' . $_SESSION['userId']);
+            error_log('User logged in, userId: ' . $_SESSION['userId'] . ', role: ' . $_SESSION['role']);
             $response->redirect('/home');
         } else {
             $response->setTemplate('login.php');
         }
+    }
+
+    private function handleFailedLogin(Response $response, $errorMessage)
+    {
+        error_log($errorMessage);
+        $response->setTemplate('login.php', ['error' => $errorMessage]);
     }
 
     public function register(Request $request, Response $response)
@@ -64,10 +63,10 @@ class AuthController
 
             if (empty($username) || empty($email) || empty($password)) {
                 $response->setTemplate('register.php', ['error' => 'All fields are required.']);
+                //TODO: use these params in the template
                 return;
             }
 
-            // Create a new User object with the provided username, email, and password
             $user = new User(null, $username, $email, $password, false);
 
             if (ORM::createUser($user)) {
@@ -82,7 +81,6 @@ class AuthController
 
     public function logout(Request $request, Response $response)
     {
-        session_start();
         session_destroy();
 
         $response->redirect('/login');

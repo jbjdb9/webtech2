@@ -54,7 +54,6 @@ class User
 
     public function verifyPassword($password)
     {
-        error_log('Comparing ' . $password . ' to ' . $this->password);
         return password_verify($password, $this->password);
     }
 }
