@@ -6,8 +6,15 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </head>
 <body>
-{% block header %}{% endblock %}
-<p>This is the base template</p>
-{% block body %}{% endblock %}
+    {% block header %}{% endblock %}
+    <div class="container-fluid">
+        <div class="row mt-3 gx-5 justify-content-center">
+            <div class="col-md-11">
+                <div class="row justify-content-center">
+                    {% block body %}{% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

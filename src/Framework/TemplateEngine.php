@@ -37,6 +37,7 @@ class TemplateEngine
         }
 
         $templateContent = $this->replaceParams($templateContent, $params);
+        $templateContent = $this->evaluateIfExpressions($templateContent, $params);
         return $this->evaluateExpressions($templateContent);
     }
 
@@ -122,6 +123,27 @@ class TemplateEngine
             }
 
             return $matches[0];
+        }, $content);
+    }
+
+    /**
+     * Evaluates the if expressions in a template content.
+     *
+     * @param string $content The template content.
+     * @param array $params The parameters to use in the if expressions.
+     * @return string The template content with evaluated if expressions.
+     */
+    protected function evaluateIfExpressions($content, $params)
+    {
+        return preg_replace_callback('/{% if (.*?) is defined %}(.*?){% endif %}/s', function ($matches) use ($params) {
+            $variable = $matches[1];
+            $content = $matches[2];
+
+            if (isset($params[$variable])) {
+                return $content;
+            }
+
+            return '';
         }, $content);
     }
 }

@@ -22,6 +22,7 @@ $router->get('/logout', [AuthController::class, 'logout']);
 $router->get('/register', [AuthController::class, 'register']);
 $router->post('/register', [AuthController::class, 'register']);
 $router->get('/admin', [AdminController::class, 'index']);
+$router->get('/profile', [ProfileController::class, 'index']);
 
 $router->addMiddleware(new AuthMiddleware());
 
