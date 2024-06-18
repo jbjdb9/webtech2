@@ -3,12 +3,11 @@
 namespace App\App\Controller;
 
 use App\App\Database\ORM;
-use App\App\Model\User;
 use App\App\Model\UserRole;
 use App\Framework\Request;
 use App\Framework\Response;
 
-class AuthController
+class LoginController
 {
     public function login(Request $request, Response $response)
     {
@@ -52,31 +51,6 @@ class AuthController
     {
         error_log($errorMessage);
         $response->setTemplate('login.php', ['error' => $errorMessage]);
-    }
-
-    public function register(Request $request, Response $response)
-    {
-        if ($request->isPost()) {
-            $username = $request->getPost('username');
-            $email = $request->getPost('email');
-            $password = $request->getPost('password');
-
-            if (empty($username) || empty($email) || empty($password)) {
-                $response->setTemplate('register.php', ['error' => 'All fields are required.']);
-                //TODO: use these params in the template
-                return;
-            }
-
-            $user = new User(null, $username, $email, $password, false);
-
-            if (ORM::createUser($user)) {
-                $response->redirect('/login');
-            } else {
-                $response->setTemplate('register.php', ['error' => 'Registration failed. Please try again.']);
-            }
-        } else {
-            $response->setTemplate('register.php');
-        }
     }
 
     public function logout(Request $request, Response $response)
