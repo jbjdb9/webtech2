@@ -26,6 +26,7 @@ $router->post('/register', [RegisterController::class, 'register']);
 
 $router->get('/admin', [AdminController::class, 'index']);
 $router->get('/profile', [ProfileController::class, 'index']);
+$router->post('/delete-account', [ProfileController::class, 'deleteAccount']);
 
 $router->addMiddleware(new AuthMiddleware());
 
