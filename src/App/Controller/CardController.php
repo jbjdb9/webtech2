@@ -66,9 +66,12 @@ class CardController
         }
 
         $card = new Card();
-        // Set card properties from $request
-        // $card->setTitle($request->get('title'));
-        // $card->setDescription($request->get('description'));
+        $card->name = $_POST['name'];
+        $card->attack = $_POST['attack'];
+        $card->defense = $_POST['defense'];
+        $card->set = $_POST['set'];
+        $card->rarity = $_POST['rarity'];
+        $card->market_price = $_POST['market_price'];
         $card->save();
 
         $response = new Response();
