@@ -24,67 +24,62 @@ class CardController
         $this->templateEngine = $templateEngine;
     }
 
-    public function index(Request $request)
+    public function index(Request $request, Response $response)
     {
         $cards = $this->card->all();
-        $response = new Response();
         $response->setTemplate('cards/index.php', ['cards' => $cards]);
         return $response;
     }
 
-    public function show(Request $request, $id)
+    public function show(Request $request, Response $response, $id)
     {
         $card = $this->card->find($id);
-        $response = new Response();
         $response->setTemplate('cards/show.php', ['card' => $card]);
         return $response;
     }
 
-    public function create(Request $request)
+    public function create(Request $request, Response $response)
     {
         $role = $this->userRole->getRoleNameByUserId($this->user->getId());
 
         if ($role !== 'admin') {
-            $response = new Response();
             $response->setStatusCode(401);
             return $response;
         }
 
-        $response = new Response();
         $response->setTemplate('cards/create.php');
         return $response;
     }
 
-    public function store(Request $request)
+    public function store(Request $request, Response $response)
     {
-        $role = $this->userRole->getRoleNameByUserId($this->user->getId());
+        if ($request->isPost()) {
+            $role = $this->userRole->getRoleNameByUserId($this->user->getId());
 
-        if ($role !== 'admin') {
-            $response = new Response();
-            $response->setStatusCode(401);
+            if ($role !== 'admin') {
+                $response->setStatusCode(401);
+                return $response;
+            }
+
+            $card = new Card();
+            $card->name = $request->getPost('name');
+            $card->attack = $request->getPost('attack');
+            $card->defense = $request->getPost('defense');
+            $card->set = $request->getPost('set');
+            $card->rarity = $request->getPost('rarity');
+            $card->market_price = $request->getPost('market_price');
+            $card->save();
+
+            $response->setStatusCode(201);
             return $response;
         }
-
-        $card = new Card();
-        $card->name = $_POST['name'];
-        $card->attack = $_POST['attack'];
-        $card->defense = $_POST['defense'];
-        $card->set = $_POST['set'];
-        $card->rarity = $_POST['rarity'];
-        $card->market_price = $_POST['market_price'];
-        $card->save();
-
-        $response = new Response();
-        $response->setStatusCode(201);
-        return $response;
     }
 
-    public function delete(Request $request, $id)
+    public function delete(Request $request, Response $response, $id)
     {
         $role = $this->userRole->getRoleNameByUserId($this->user->getId());
 
         if ($role !== 'admin') {
-            $response = new Response();
             $response->setStatusCode(401);
             return $response;
         }
@@ -92,7 +87,6 @@ class CardController
         $card = $this->card->find($id);
         $card->delete();
 
-        $response = new Response();
         $response->setStatusCode(200);
         return $response;
     }

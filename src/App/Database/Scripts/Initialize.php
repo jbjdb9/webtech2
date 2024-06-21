@@ -34,17 +34,17 @@ try {
     ");
 
     // Create the cards table
-//    $pdo->exec("
-//        CREATE TABLE IF NOT EXISTS cards (
-//            id INTEGER PRIMARY KEY,
-//            name TEXT NOT NULL,
-//            attack INTEGER NOT NULL,
-//            defense INTEGER NOT NULL,
-//            set TEXT NOT NULL,
-//            rarity TEXT NOT NULL,
-//            price REAL NOT NULL
-//        )
-//    ");
+    $pdo->exec("
+    CREATE TABLE IF NOT EXISTS cards (
+        id INTEGER PRIMARY KEY,
+        name TEXT NOT NULL,
+        attack INTEGER NOT NULL,
+        defense INTEGER NOT NULL,
+        rarity TEXT NOT NULL,
+        price REAL NOT NULL,
+        set_id INTEGER
+    )
+    ");
 
     echo "Database tables created successfully.\n";
 } catch (PDOException $e) {
