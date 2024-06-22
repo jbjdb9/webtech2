@@ -96,9 +96,12 @@ class TemplateEngine
      * @param array $params The parameters to replace in the template content.
      * @return string The template content with replaced parameters.
      */
-    protected function replaceParams($content, $params)
+    private function replaceParams($content, $params)
     {
         foreach ($params as $key => $value) {
+            if (is_array($value)) {
+                $value = implode(", ", $value);
+            }
             $content = str_replace('{{ ' . $key . ' }}', $value, $content);
         }
 

@@ -7,7 +7,7 @@
 {% block body %}
 <p>Your current score is: {{ score }}</p>
 
-<p>Role: {{ role }}</p>
+<p>Role: {{ @@ROLE }}</p>
 
 {% if role == Admin %}
     <p>You are an admin.</p>

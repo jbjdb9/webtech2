@@ -6,7 +6,7 @@
 
 {% block body %}
 
-<h1>Username: {{ username }}</h1>
+<h1>Username: {{ @@USERNAME }}</h1>
 <p>Email: {{ email }}</p>
 
 {% endblock %}

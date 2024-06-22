@@ -1,13 +1,12 @@
 <?php
 
 namespace App\App\Controller;
-use App\Framework\Request;
-use App\Framework\Response;
+use App\Framework\BaseController;
 
-class DeckController
+class DeckController extends BaseController
 {
-    public function index(Request $request, Response $response)
+    public function index()
     {
-        $response->setTemplate('decks.php');
+        $this->renderTemplate('decks.php');
     }
 }

@@ -2,14 +2,12 @@
 
 namespace App\App\Controller;
 
-use App\App\Services\UserService;
-use App\Framework\Request;
-use App\Framework\Response;
+use App\Framework\BaseController;
 
-class ProfileController
+class ProfileController extends BaseController
 {
-    public function index(Request $request, Response $response, $params)
+    public function index()
     {
-        $response->setTemplate('profile.php');
+        $this->renderTemplate('profile.php');
     }
 }
