@@ -10,7 +10,7 @@ class AuthMiddleware
         session_start();
         error_log('Session started');
         $allowedPaths = ['/login', '/register']; // accessible without login
-        $premiumPaths = ['/decks']; // accessible only by Premium users
+        $premiumPaths = ['/decks']; // accessible only by Premium users or Admins
         $adminPaths = ['/admin']; // accessible only by Admins
 
         if (!in_array($request->getPath(), $allowedPaths) && !isset($_SESSION['userId'])) {
@@ -18,8 +18,7 @@ class AuthMiddleware
             exit();
         }
 
-        //TODO: Premium OR Admin
-        if (in_array($request->getPath(), $premiumPaths) && $_SESSION['role'] !== 'Premium') {
+        if (in_array($request->getPath(), $premiumPaths) && !in_array($_SESSION['role'], ['Premium', 'Admin'])) {
             header('Location: /home');
             exit();
         }
