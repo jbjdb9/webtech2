@@ -38,6 +38,7 @@ class TemplateEngine
 
         $templateContent = $this->replaceParams($templateContent, $params);
         $templateContent = $this->evaluateIfExpressions($templateContent, $params);
+        $templateContent = $this->evaluateIfIsExpressions($templateContent, $params);
         return $this->evaluateExpressions($templateContent);
     }
 
@@ -127,7 +128,7 @@ class TemplateEngine
     }
 
     /**
-     * Evaluates the if expressions in a template content.
+     * Checks if a variable is defined in a template content.
      *
      * @param string $content The template content.
      * @param array $params The parameters to use in the if expressions.
@@ -140,6 +141,28 @@ class TemplateEngine
             $content = $matches[2];
 
             if (isset($params[$variable])) {
+                return $content;
+            }
+
+            return '';
+        }, $content);
+    }
+
+    /**
+     * Checks if a variable is equal to a value in a template content.
+     *
+     * @param string $content The template content.
+     * @param array $params The parameters to use in the if expressions.
+     * @return string The template content with evaluated if expressions.
+     */
+    protected function evaluateIfIsExpressions($content, $params)
+    {
+        return preg_replace_callback('/{% if (.*?) == (.*?) %}(.*?){% endif %}/s', function ($matches) use ($params) {
+            $variable = $matches[1];
+            $value = $matches[2];
+            $content = $matches[3];
+
+            if (isset($params[$variable]) && $params[$variable] == $value) {
                 return $content;
             }
 

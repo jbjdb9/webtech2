@@ -22,7 +22,7 @@
                         </div>
                     </form>
                     {% if error is defined %}
-                    <div class="alert alert-danger" role="alert">
+                    <div class="alert alert-danger mt-4" role="alert">
                         {{ error }}
                     </div>
                     {% endif %}

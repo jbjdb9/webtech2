@@ -15,11 +15,6 @@ class LoginController
             $usernameOrEmail = $request->getPost('usernameOrEmail');
             $password = $request->getPost('password');
 
-//            if (empty($usernameOrEmail) || empty($password)) {
-//                $this->handleFailedLogin($response, 'Login failed: username or password not provided');
-//                return;
-//            }
-
             $user = ORM::getUserByUsernameOrEmail($usernameOrEmail);
 
             if (!$user) {
@@ -34,11 +29,6 @@ class LoginController
 
             $_SESSION['userId'] = $user->getId();
             $_SESSION['role'] = UserRole::getRoleNameByUserId($user->getId());
-
-//            if (empty($_SESSION['userId'])) {
-//                $this->handleFailedLogin($response, 'Login failed: unable to store user ID in session');
-//                return;
-//            }
 
             error_log('User logged in, userId: ' . $_SESSION['userId'] . ', role: ' . $_SESSION['role']);
             $response->redirect('/home');

@@ -12,8 +12,11 @@ class HomeController
         // Dummy data for now
         $score = 100;
 
+        $role = $_SESSION['role'];
+
         $response->setTemplate('home.php', [
-            'score' => $score
+            'score' => $score,
+            'role' => $role
         ]);
     }
 }
