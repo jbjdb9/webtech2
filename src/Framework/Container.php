@@ -8,6 +8,36 @@ class Container
 {
     private $services = [];
 
+    public function __construct()
+    {
+        $this->set(\App\Framework\TemplateEngine::class, function () {
+            return new \App\Framework\TemplateEngine('src/App/View/');
+        });
+
+        $this->set(\App\App\Model\Card::class, function () {
+            return new \App\App\Model\Card();
+        });
+
+        $this->set(\App\App\Model\User::class, function () {
+            // De User klasse heeft een constructor die parameters verwacht. Voorbeeldwaarden zijn gebruikt.
+            return new \App\App\Model\User(null, 'username', 'email@example.com', 'password', false);
+        });
+
+        $this->set(\App\App\Model\UserRole::class, function () {
+            return new \App\App\Model\UserRole();
+        });
+
+        $this->set(\App\App\Controller\CardController::class, function ($container) {
+            return new \App\App\Controller\CardController(
+                $container->get(\App\Framework\TemplateEngine::class),
+                $container->get(\App\App\Model\Card::class),
+                $container->get(\App\App\Model\User::class),
+                $container->get(\App\App\Model\UserRole::class)
+            );
+        });
+    }
+    
+
     public function set($name, $value)
     {
         $this->services[$name] = $value;
