@@ -74,4 +74,10 @@ class ORM {
             return false;
         }
     }
+
+    public static function getAllUsers() {
+        $stmt = self::getPdo()->prepare('SELECT * FROM users');
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
 }

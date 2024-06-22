@@ -39,7 +39,8 @@ class TemplateEngine
         $templateContent = $this->replaceParams($templateContent, $params);
         $templateContent = $this->evaluateIfExpressions($templateContent, $params);
         $templateContent = $this->evaluateIfIsExpressions($templateContent, $params);
-        return $this->evaluateExpressions($templateContent);
+        $templateContent = $this->evaluateForElseExpressions($templateContent, $params);
+        return $templateContent;
     }
 
     /**
@@ -100,34 +101,12 @@ class TemplateEngine
     {
         foreach ($params as $key => $value) {
             if (is_array($value)) {
-                $value = implode(", ", $value);
+                continue;
             }
             $content = str_replace('{{ ' . $key . ' }}', $value, $content);
         }
 
         return $content;
-    }
-
-    /**
-     * Evaluates the expressions in a template content.
-     *
-     * @param string $content The template content.
-     * @return string The template content with evaluated expressions.
-     */
-    protected function evaluateExpressions($content)
-    {
-        return preg_replace_callback('/{{ (.*?) }}/', function ($matches) {
-            $expression = $matches[1];
-
-            // Sanitize the expression
-            $expression = preg_replace('/[^0-9+\-.*\/() ]/', '', $expression);
-
-            if (preg_match('/^([0-9+\-.*\/() ])+$/', $expression)) {
-                return eval('return ' . $expression . ';');
-            }
-
-            return $matches[0];
-        }, $content);
     }
 
     /**
@@ -170,6 +149,26 @@ class TemplateEngine
             }
 
             return '';
+        }, $content);
+    }
+
+    protected function evaluateForElseExpressions($content, $params)
+    {
+        return preg_replace_callback('/{% for (.*?) in (.*?) %}(.*?){% else %}(.*?){% endfor %}/s', function ($matches) use ($params) {
+            $variable = $matches[1];
+            $array = $matches[2];
+            $forContent = $matches[3];
+            $elseContent = $matches[4];
+
+            if (isset($params[$array]) && is_array($params[$array]) && !empty($params[$array])) {
+                $result = '';
+                foreach ($params[$array] as $item) {
+                    $result .= str_replace(["{{ $variable.username }}", "{{ $variable.email }}"], [$item->username, $item->email], $forContent);
+                }
+                return $result;
+            }
+
+            return $elseContent;
         }, $content);
     }
 }
