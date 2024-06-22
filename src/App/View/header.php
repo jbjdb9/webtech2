@@ -13,6 +13,9 @@
                     <a class="nav-link" href="/cards">Cards</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="/decks">Decks</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="/admin">Admin</a>
                 </li>
             </ul>
