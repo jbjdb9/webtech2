@@ -13,7 +13,7 @@ class CardController extends BaseController
 {
     public function index()
     {
-        $cards = Card::all();
+        $cards = Card::getAll();
         $this->renderTemplate('cards/index.php', ['cards' => $cards]);
     }
 

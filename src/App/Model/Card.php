@@ -103,7 +103,7 @@ class Card
         return $card;
     }
 
-    public static function all() {
+    public static function getAll() {
         $pdo = ORM::getPdo();
 
         $stmt = $pdo->query('SELECT * FROM cards');
