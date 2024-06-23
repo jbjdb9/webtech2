@@ -4,12 +4,6 @@ namespace App\Framework;
 
 use ReflectionObject;
 
-/**
- * Class TemplateEngine
- *
- * This class is responsible for rendering templates with given parameters.
- * It supports template inheritance and inclusion, as well as basic expression evaluation.
- */
 class TemplateEngine
 {
     protected $templateDir;
@@ -19,13 +13,6 @@ class TemplateEngine
         $this->templateDir = $templateDir;
     }
 
-    /**
-     * Renders a template with given parameters.
-     *
-     * @param string $template The name of the template to render.
-     * @param array $params The parameters to use in the template.
-     * @return string The rendered template content.
-     */
     public function render($template, $params = [])
     {
         $templateContent = file_get_contents($this->templateDir . '/' . $template);
@@ -42,16 +29,10 @@ class TemplateEngine
         $templateContent = $this->evaluateIfExpressions($templateContent, $params);
         $templateContent = $this->evaluateIfIsExpressions($templateContent, $params);
         $templateContent = $this->evaluateForElseExpressions($templateContent, $params);
-        $templateContent = $this->evaluateExpressions($templateContent);
+//        $templateContent = $this->evaluateExpressions($templateContent);
         return $templateContent;
     }
 
-    /**
-     * Extracts the blocks from a template content.
-     *
-     * @param string $content The template content.
-     * @return array The extracted blocks.
-     */
     protected function getBlocks($content)
     {
         preg_match_all('/{% block (.*?) %}(.*?){% endblock %}/s', $content, $matches, PREG_SET_ORDER);
@@ -64,12 +45,6 @@ class TemplateEngine
         return $blocks;
     }
 
-    /**
-     * Gets the parent template of a template.
-     *
-     * @param string $content The template content.
-     * @return string|null The name of the parent template, or null if there is no parent template.
-     */
     protected function getParentTemplate($content)
     {
         if (preg_match('/{% extends \'(.*?)\' %}/', $content, $matches)) {
@@ -79,12 +54,6 @@ class TemplateEngine
         return null;
     }
 
-    /**
-     * Includes other templates into a template content.
-     *
-     * @param string $content The template content.
-     * @return string The template content with included templates.
-     */
     protected function includeTemplates($content)
     {
         return preg_replace_callback('/{% include \'(.*?)\' %}/', function ($matches) {
@@ -93,13 +62,6 @@ class TemplateEngine
         }, $content);
     }
 
-    /**
-     * Replaces the parameters in a template content.
-     *
-     * @param string $content The template content.
-     * @param array $params The parameters to replace in the template content.
-     * @return string The template content with replaced parameters.
-     */
     private function replaceParams($content, $params)
     {
         foreach ($params as $key => $value) {
@@ -112,35 +74,24 @@ class TemplateEngine
         return $content;
     }
 
-    /**
-     * Evaluates the expressions in a template content.
-     *
-     * @param string $content The template content.
-     * @return string The template content with evaluated expressions.
-     */
-    protected function evaluateExpressions($content)
-    {
-        return preg_replace_callback('/{{ (.*?) }}/', function ($matches) {
-            $expression = $matches[1];
+//    protected function evaluateExpressions($content)
+//    {
+//        return preg_replace_callback('/{{ (.*?) }}/', function ($matches) {
+//            $expression = $matches[1];
+//
+//            // Check if the expression is mathematical
+//            if (preg_match('/^([0-9+\-.*\/() ])+$/', $expression)) {
+//                // Sanitize the expression
+//                $expression = preg_replace('/[^0-9+\-.*\/() ]/', '', $expression);
+//
+//                return eval('return ' . $expression . ';');
+//            }
+//
+//            // If the expression is not mathematical, return it as is
+//            return $matches[0];
+//        }, $content);
+//    }
 
-            // Sanitize the expression
-            $expression = preg_replace('/[^0-9+\-.*\/() ]/', '', $expression);
-
-            if (preg_match('/^([0-9+\-.*\/() ])+$/', $expression)) {
-                return eval('return ' . $expression . ';');
-            }
-
-            return $matches[0];
-        }, $content);
-    }
-
-    /**
-     * Checks if a variable is defined in a template content.
-     *
-     * @param string $content The template content.
-     * @param array $params The parameters to use in the if expressions.
-     * @return string The template content with evaluated if expressions.
-     */
     protected function evaluateIfExpressions($content, $params)
     {
         return preg_replace_callback('/{% if (.*?) is defined %}(.*?){% endif %}/s', function ($matches) use ($params) {
@@ -155,13 +106,6 @@ class TemplateEngine
         }, $content);
     }
 
-    /**
-     * Checks if a variable is equal to a value in a template content.
-     *
-     * @param string $content The template content.
-     * @param array $params The parameters to use in the if expressions.
-     * @return string The template content with evaluated if expressions.
-     */
     protected function evaluateIfIsExpressions($content, $params)
     {
         return preg_replace_callback('/{% if (.*?) == (.*?) %}(.*?){% endif %}/s', function ($matches) use ($params) {

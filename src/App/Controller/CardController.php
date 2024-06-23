@@ -3,8 +3,6 @@
 namespace App\App\Controller;
 
 use App\App\Model\Card;
-use App\App\Model\User;
-use App\App\Model\UserRole;
 use App\Framework\BaseController;
 use App\Framework\Request;
 use App\Framework\Response;
