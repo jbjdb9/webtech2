@@ -55,9 +55,17 @@ Class Deck
 
     public function addCard(Card $card)
     {
-        $sql = "INSERT INTO deck_cards (deck_id, card_id) VALUES (?, ?)";
-        $stmt = Database::getPdo()->prepare($sql);
-        $stmt->execute([$this->id, $card->getId()]);
+        // Check if the card is already in the deck
+        $stmt = Database::getPdo()->prepare('SELECT * FROM deck_cards WHERE deck_id = :deck_id AND card_id = :card_id');
+        $stmt->execute(['deck_id' => $this->id, 'card_id' => $card->getId()]);
+        $existingCard = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // If the card is not in the deck, insert it
+        if (!$existingCard) {
+            $sql = "INSERT INTO deck_cards (deck_id, card_id) VALUES (?, ?)";
+            $stmt = Database::getPdo()->prepare($sql);
+            $stmt->execute([$this->id, $card->getId()]);
+        }
     }
 
     public function removeCard(Card $card) {
@@ -110,7 +118,7 @@ Class Deck
         $cardIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
         foreach ($cardIds as $cardId) {
-            $card = Card::find($cardId);
+            $card = Card::getById($cardId);
             if ($card) {
                 $this->addCard($card);
             }
