@@ -11,37 +11,53 @@ class DeckController extends BaseController
 {
     public function index()
     {
-        $this->renderTemplate('decks.php');
+        $decks = Deck::all(); 
+        $this->renderTemplate('decks.php', ['decks' => $decks]);
     }
 
-    public function show(Request $request, Response $response, $params) {
+
+    public function show(Request $request, Response $response, $params)
+    {
         $deck = new Deck();
         $deck->loadById($params['id']);
-        $this->renderTemplate('deck.php', ['deck' => $deck]);}
+        $this->renderTemplate('deck_show.php', ['deck' => $deck]);
+    }
     public function create(Request $request, Response $response)
     {
-        // Toon formulier om een nieuw deck te maken
+        $this->renderTemplate('deck_create.php');
     }
 
     public function store(Request $request, Response $response)
     {
-        // Verwerk het formulier om een nieuw deck op te slaan
-        // Valideer voor premiumgebruikers en het aantal kopieën van kaarten
+        $deck = new Deck();
+        $deck->setName($request->getPost('name'));
+        $deck->setUserId($request->getPost('user_id')); 
+        $deck->save();
+        $response->redirect('/decks');
     }
 
     public function edit(Request $request, Response $response, $params)
     {
-        // Toon formulier om een bestaand deck te bewerken
+        $deck = new Deck();
+        $deck->loadById($params['id']);
+        $this->renderTemplate('deck_edit.php', ['deck' => $deck]);
     }
 
     public function update(Request $request, Response $response, $params)
     {
-        // Verwerk het formulier om wijzigingen aan een deck op te slaan
-        // Valideer opnieuw voor premiumgebruikers en het aantal kopieën van kaarten
+        $deck = new Deck();
+        $deck->loadById($params['id']);
+        $deck->setName($request->getPost('name'));
+        $deck->setUserId($request->getPost('user_id'));
+        $deck->save();
+        $response->redirect('/decks');
     }
 
     public function delete(Request $request, Response $response, $params)
     {
-        // Verwijder een deck
+        $deck = new Deck();
+        $deck->loadById($params['id']);
+        $deck->delete();
+        $response->redirect('/decks');
     }
 }

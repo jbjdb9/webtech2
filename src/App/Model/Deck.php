@@ -44,6 +44,14 @@ Class deck
         $this->cards = $cards;
     }
 
+    public function __construct($id = null, $userId = null, $name = null, $cards = [])
+    {
+        $this->id = $id;
+        $this->userId = $userId;
+        $this->name = $name;
+        $this->cards = $cards;
+    }
+
     public function addCard(Card $card) {
         $this->cards[] = $card;
     }
@@ -53,6 +61,14 @@ Class deck
         if ($key !== false) {
             unset($this->cards[$key]);
         }
+    }
+
+    public static function all()
+    {
+        $stmt = ORM::getPdo()->query('SELECT * FROM decks');
+        $decks = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $decks;
     }
 
     public function loadById($id)
