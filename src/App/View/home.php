@@ -5,11 +5,10 @@
 {% endblock %}
 
 {% block body %}
-<p>Your current score is: {{ score }}</p>
 
-<p>Role: {{ @@ROLE }}</p>
+<h1 class="display-1">Welcome, {{ @@USERNAME }}</h1>
 
-{% if role == Admin %}
-    <p>You are an admin.</p>
+{% if @@ROLE == Admin %}
+    <h2>You are an admin.</h2>
 {% endif %}
 {% endblock %}

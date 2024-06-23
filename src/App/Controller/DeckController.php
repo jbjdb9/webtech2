@@ -15,13 +15,17 @@ class DeckController extends BaseController
         $this->renderTemplate('decks/index.php', ['decks' => $decks]);
     }
 
-
     public function show(Request $request, Response $response, $params)
     {
-        $deck = new Deck();
-        $deck->loadById($params['id']);
-        $this->renderTemplate('decks/show.php', ['deck' => $deck]);
+        $id = ($params['id']);
+        $deck = Deck::getById($id);
+
+        $this->renderTemplate('decks/show.php', [
+            'name' => $deck->getName(),
+            'id' => $deck->getId(),
+        ]);
     }
+
     public function create(Request $request, Response $response)
     {
         $this->renderTemplate('decks/create.php');
@@ -32,31 +36,35 @@ class DeckController extends BaseController
         $deck = new Deck();
         $deck->setName($request->getPost('name'));
         $deck->setUserId($request->getPost('user_id')); 
-        $deck->save();
+        $deck->create();
         $response->redirect('/decks');
     }
 
     public function edit(Request $request, Response $response, $params)
     {
-        $deck = new Deck();
-        $deck->loadById($params['id']);
-        $this->renderTemplate('decks/edit.php', ['deck' => $deck]);
+        $id = $params['id'];
+        $deck = Deck::getById($id);
+
+        $this->renderTemplate('decks/edit.php', [
+            'name' => $deck->getName(),
+            'id' => $deck->getId(),
+        ]);
     }
 
     public function update(Request $request, Response $response, $params)
     {
         $deck = new Deck();
-        $deck->loadById($params['id']);
+        $deck->getById($params['id']);
         $deck->setName($request->getPost('name'));
         $deck->setUserId($request->getPost('user_id'));
-        $deck->save();
+        $deck->create();
         $response->redirect('/decks');
     }
 
     public function delete(Request $request, Response $response, $params)
     {
-        $deck = new Deck();
-        $deck->loadById($params['id']);
+        $id = $params['id'];
+        $deck = Deck::getById($id);
         $deck->delete();
         $response->redirect('/decks');
     }

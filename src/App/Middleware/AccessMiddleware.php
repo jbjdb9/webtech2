@@ -2,8 +2,7 @@
 
 namespace App\App\Middleware;
 
-//TODO: rename this class to AccessMiddleware
-class AuthMiddleware
+class AccessMiddleware
 {
     public function __invoke($request, $response, $next)
     {

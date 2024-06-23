@@ -3,6 +3,7 @@
 namespace App\App\Controller;
 
 use App\App\Model\Card;
+use App\App\Model\Deck;
 use App\Framework\BaseController;
 use App\Framework\Request;
 use App\Framework\Response;
@@ -18,12 +19,14 @@ class CardController extends BaseController
     public function show(Request $request, Response $response, $params)
     {
         $id = $params['id'];
-        $card = Card::find($id);
+        $card = Card::getById($id);
 
         if ($card === null) {
             $response->redirect('/cards');
             return;
         }
+
+        $decks = Deck::getAllByUserId($_SESSION['userId']);
 
         $this->renderTemplate('cards/show.php', [
             'name' => $card->getName(),
@@ -31,14 +34,33 @@ class CardController extends BaseController
             'defense' => $card->getDefense(),
             'rarity' => $card->getRarity(),
             'market_price' => $card->getPrice(),
-            'id' => $card->getId()
+            'id' => $card->getId(),
+            'decks' => $decks
         ]);
+    }
+
+    public function addCardToDeck(Request $request, Response $response)
+    {
+        $deckId = $request->getPost('deck_id');
+        $cardId = $request->getPost('card_id');
+
+        $deck = Deck::getById($deckId);
+        $card = Card::getById($cardId);
+
+        if ($deck && $card) {
+            $deck->addCard($card);
+            $response->redirect('/cards/' . $cardId);
+        } else {
+            $response->setStatusCode(404);
+        }
+
+        return $response;
     }
 
     public function edit(Request $request, Response $response, $params)
     {
         $id = $params['id'];
-        $card = Card::find($id);
+        $card = Card::getById($id);
         $this->renderTemplate('cards/edit.php', [
             'name' => $card->getName(),
             'attack' => $card->getAttack(),
@@ -63,7 +85,7 @@ class CardController extends BaseController
         $card->setRarity($request->getPost('rarity'));
         $card->setPrice($request->getPost('price'));
         $card->setSetId($request->getPost('set'));
-        $card->save();
+        $card->create();
 
         $response->setStatusCode(201);
         $response->redirect('/cards');
@@ -73,7 +95,7 @@ class CardController extends BaseController
     public function delete(Request $request, Response $response, $args)
     {
         $id = (string) $args['id'];
-        $card = Card::find($id);
+        $card = Card::getById($id);
 
         if ($card === null) {
             $response->setStatusCode(404);

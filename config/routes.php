@@ -7,12 +7,12 @@ use App\App\Controller\CardController;
 use App\App\Controller\HomeController;
 use App\App\Controller\ProfileController;
 use App\App\Controller\RegisterController;
-use App\App\Middleware\AuthMiddleware;
+use App\App\Middleware\AccessMiddleware;
 use App\Framework\Router;
 
 $router = new Router();
 
-$router->get('/', [CardController::class, 'index']);
+$router->get('/', [HomeController::class, 'index']);
 $router->get('/home', [HomeController::class, 'index']);
 
 $router->get('/cards', [CardController::class, 'index']);
@@ -24,10 +24,11 @@ $router->post('/cards/{id}/delete', [CardController::class, 'delete']);
 
 $router->get('/decks', [DeckController::class, 'index']);
 $router->get('/deck/create', [DeckController::class, 'create']);
+$router->post('/deck/create', [DeckController::class, 'store']);
 $router->get('/deck/{id}', [DeckController::class, 'show']);
 $router->get('/deck/{id}/edit', [DeckController::class, 'edit']);
 $router->get('/deck/{id}/delete', [DeckController::class, 'delete']);
-$router->post('/deck/store', [DeckController::class, 'store']);
+$router->post('/addCardToDeck', [CardController::class, 'addCardToDeck']);
 
 $router->get('/login', [LoginController::class, 'login']);
 $router->post('/login', [LoginController::class, 'login']);
@@ -45,6 +46,6 @@ $router->post('/profile/buy-premium', [ProfileController::class, 'buyPremium']);
 $router->post('/profile/update', [ProfileController::class, 'updateProfile']);
 $router->get('/user/{id}', [ProfileController::class, 'index']);
 
-$router->addMiddleware(new AuthMiddleware());
+$router->addMiddleware(new AccessMiddleware());
 
 return $router;

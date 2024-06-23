@@ -7,7 +7,7 @@
 {% block body %}
 
 <div class="container">
-    <h1>Cards</h1>
+    <h1 class="display-1">Cards</h1>
     <a href="/cards/create" class="btn btn-primary mb-3">Add New Card</a>
     <div class="row">
         {% for card in cards %}

@@ -6,7 +6,7 @@
 
 {% block body %}
 
-<h1>Decks</h1>
+<h1 class="display-1">Decks</h1>
 <a href="/deck/create">Add new deck</a>
 <ul>
     {% for deck in decks %}

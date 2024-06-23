@@ -2,15 +2,24 @@
 
 namespace App\App\Model;
 
-use App\App\Database\ORM;
+use App\App\Database\Database;
 use PDO, PDOException;
 
-Class deck
+Class Deck
 {
     public $id;
     public $userId;
     public $name;
     public $cards = [];
+
+    public function __construct($id = null, $userId = null, $name = null, $cards = [])
+    {
+        $this->id = $id;
+        $this->userId = $userId;
+        $this->name = $name;
+        $this->cards = $cards;
+    }
+
 
     public function getId() {
         return $this->id;
@@ -44,16 +53,11 @@ Class deck
         $this->cards = $cards;
     }
 
-    public function __construct($id = null, $userId = null, $name = null, $cards = [])
+    public function addCard(Card $card)
     {
-        $this->id = $id;
-        $this->userId = $userId;
-        $this->name = $name;
-        $this->cards = $cards;
-    }
-
-    public function addCard(Card $card) {
-        $this->cards[] = $card;
+        $sql = "INSERT INTO deck_cards (deck_id, card_id) VALUES (?, ?)";
+        $stmt = Database::getPdo()->prepare($sql);
+        $stmt->execute([$this->id, $card->getId()]);
     }
 
     public function removeCard(Card $card) {
@@ -65,31 +69,43 @@ Class deck
 
     public static function all()
     {
-        $stmt = ORM::getPdo()->query('SELECT * FROM decks');
+        $stmt = Database::getPdo()->query('SELECT * FROM decks');
+        $decks = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $decks;
+    }
+    public static function getAllByUserId($user_id)
+    {
+        $stmt = Database::getPdo()->prepare('SELECT * FROM decks WHERE user_id = :user_id');
+        $stmt->execute(['user_id' => $user_id]);
         $decks = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         return $decks;
     }
 
-    public function loadById($id)
+    public static function getById($id)
     {
-        $stmt = ORM::getPdo()->prepare('SELECT * FROM decks WHERE id = :id');
+        $stmt = Database::getPdo()->prepare('SELECT * FROM decks WHERE id = :id');
         $stmt->execute(['id' => $id]);
-        $deck = $stmt->fetch(PDO::FETCH_ASSOC);
+        $deckData = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($deck) {
-            $this->id = $deck['id'];
-            $this->userId = $deck['user_id'];
-            $this->name = $deck['name'];
-            // Laad de kaarten die bij dit deck horen
-            $this->loadCards();
+        if ($deckData) {
+            $deck = new Deck();
+            $deck->id = $deckData['id'];
+            $deck->userId = $deckData['user_id'];
+            $deck->name = $deckData['name'];
+            // Load the cards that belong to this deck
+            $deck->loadCards();
+
+            return $deck;
         }
 
+        return null;
     }
 
     private function loadCards()
     {
-        $stmt = ORM::getPdo()->prepare('SELECT card_id FROM deck_cards WHERE deck_id = :deck_id');
+        $stmt = Database::getPdo()->prepare('SELECT card_id FROM deck_cards WHERE deck_id = :deck_id');
         $stmt->execute(['deck_id' => $this->id]);
         $cardIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
@@ -101,10 +117,10 @@ Class deck
         }
     }
 
-    public function save()
+    public function create()
     {
         try {
-            $pdo = ORM::getPdo();
+            $pdo = Database::getPdo();
             $pdo->beginTransaction();
 
             if ($this->id) {
@@ -148,7 +164,7 @@ Class deck
     public function delete()
     {
         try {
-            $pdo = ORM::getPdo();
+            $pdo = Database::getPdo();
             $pdo->beginTransaction();
 
             $stmt = $pdo->prepare('DELETE FROM deck_cards WHERE deck_id = :deck_id');
@@ -164,5 +180,5 @@ Class deck
             echo $e->getMessage();
             return false;
         }
-    }    
+    }
 }

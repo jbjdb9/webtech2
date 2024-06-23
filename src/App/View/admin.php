@@ -6,9 +6,7 @@
 
 {% block body %}
 
-<p>This is a test</p>
-
-<p>These are your roles: {{ @@ROLE }}</p>
+<h1 class="display-1">Admin Panel</h1>
 
 <table class="table">
     <thead>

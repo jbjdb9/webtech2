@@ -2,7 +2,7 @@
 
 namespace App\App\Model;
 
-use App\App\Database\ORM;
+use App\App\Database\Database;
 use PDO;
 
 class Card
@@ -23,6 +23,19 @@ class Card
         $this->rarity = $rarity;
         $this->price = $price;
         $this->set_id = $set_id;
+    }
+
+    public static function getCard($row): Card
+    {
+        $card = new Card();
+        $card->setId($row['id']);
+        $card->setName($row['name']);
+        $card->setAttack($row['attack']);
+        $card->setDefense($row['defense']);
+        $card->setRarity($row['rarity']);
+        $card->setPrice($row['price']);
+        $card->setSetId($row['set_id']);
+        return $card;
     }
 
 
@@ -81,9 +94,10 @@ class Card
     public function setSetId($set_id) {
         $this->set_id = $set_id;
     }
-//TODO: rename to getById for consistency
-    public static function find($id) {
-        $stmt = ORM::getPdo()->prepare('SELECT * FROM cards WHERE id = :id');
+
+    public static function getById($id): ?Card
+    {
+        $stmt = Database::getPdo()->prepare('SELECT * FROM cards WHERE id = :id');
         $stmt->execute(['id' => $id]);
         $row = $stmt->fetch();
 
@@ -91,41 +105,26 @@ class Card
             return null;
         }
 
-        $card = new Card();
-        $card->setId($row['id']);
-        $card->setName($row['name']);
-        $card->setAttack($row['attack']);
-        $card->setDefense($row['defense']);
-        $card->setRarity($row['rarity']);
-        $card->setPrice($row['price']);
-        $card->setSetId($row['set_id']);
+        $card = self::getCard($row);
 
         return $card;
     }
 
     public static function getAll() {
-        $pdo = ORM::getPdo();
+        $pdo = Database::getPdo();
 
         $stmt = $pdo->query('SELECT * FROM cards');
         $cards = [];
 
         while ($row = $stmt->fetch()) {
-            $card = new Card();
-            $card->setId($row['id']);
-            $card->setName($row['name']);
-            $card->setAttack($row['attack']);
-            $card->setDefense($row['defense']);
-            $card->setRarity($row['rarity']);
-            $card->setPrice($row['price']);
-            $card->setSetId($row['set_id']);
+            $card = self::getCard($row);
             $cards[] = $card;
         }
 
         return $cards;
     }
-//TODO: rename to create for consistency
-    public function save() {
-        $pdo = ORM::getPdo();
+    public function create() {
+        $pdo = Database::getPdo();
 
         if ($this->id) {
             $stmt = $pdo->prepare('UPDATE cards SET name = :name, attack = :attack, defense = :defense, rarity = :rarity, price = :price, set_id = :set_id WHERE id = :id');
@@ -156,7 +155,7 @@ class Card
     }
 
     public function delete() {
-        $pdo = ORM::getPdo();
+        $pdo = Database::getPdo();
 
         $stmt = $pdo->prepare('DELETE FROM cards WHERE id = :id');
         $stmt->execute(['id' => $this->id]);

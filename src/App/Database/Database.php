@@ -4,8 +4,7 @@ namespace App\App\Database;
 
 use PDO;
 
-//TODO: rename this to Database
-class ORM {
+class Database {
     private static $pdo;
 
     public static function init() {

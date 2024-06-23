@@ -7,7 +7,7 @@
 {% block body %}
 
 <h1>Create New Deck</h1>
-<form action="/deck/store" method="post">
+<form action="/deck/create" method="post">
     <label for="name">Deck Name:</label>
     <input type="text" id="name" name="name" required>
     <label for="user_id">User ID:</label>

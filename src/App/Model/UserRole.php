@@ -2,7 +2,7 @@
 
 namespace App\App\Model;
 
-use App\App\Database\ORM;
+use App\App\Database\Database;
 
 class UserRole {
     private $userId;
@@ -10,7 +10,7 @@ class UserRole {
 
     public static function getRoleNameByUserId($userId)
     {
-        $pdo = ORM::getPdo();
+        $pdo = Database::getPdo();
         $stmt = $pdo->prepare('SELECT role_id FROM user_roles WHERE user_id = :id');
         $stmt->execute(['id' => $userId]);
         $roleId = $stmt->fetchColumn();
@@ -26,14 +26,14 @@ class UserRole {
 
     public static function assignRole($userId, $roleId)
     {
-        $pdo = ORM::getPdo();
+        $pdo = Database::getPdo();
         $stmt = $pdo->prepare('INSERT INTO user_roles (user_id, role_id) VALUES (:user_id, :role_id)');
         $stmt->execute(['user_id' => $userId, 'role_id' => $roleId]);
     }
 
     public static function revokeRole($userId, $roleId)
     {
-        $pdo = ORM::getPdo();
+        $pdo = Database::getPdo();
         $stmt = $pdo->prepare('DELETE FROM user_roles WHERE user_id = :user_id AND role_id = :role_id');
         $stmt->execute(['user_id' => $userId, 'role_id' => $roleId]);
     }

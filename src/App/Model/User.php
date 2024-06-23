@@ -2,7 +2,7 @@
 
 namespace App\App\Model;
 
-use App\App\Database\ORM;
+use App\App\Database\Database;
 use PDO;
 use PDOException;
 
@@ -64,7 +64,7 @@ class User
 
     public static function getById($id): ?User
     {
-        $stmt = ORM::getPdo()->prepare('SELECT * FROM users WHERE id = :id');
+        $stmt = Database::getPdo()->prepare('SELECT * FROM users WHERE id = :id');
         $stmt->execute(['id' => $id]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
         return $user ? new User($user['id'], $user['username'], $user['email'], $user['password'], true) : null;
@@ -72,7 +72,7 @@ class User
 
     public static function getByUsernameOrEmail($usernameOrEmail): ?User
     {
-        $stmt = ORM::getPdo()->prepare('SELECT * FROM users WHERE username = :usernameOrEmail OR email = :usernameOrEmail');
+        $stmt = Database::getPdo()->prepare('SELECT * FROM users WHERE username = :usernameOrEmail OR email = :usernameOrEmail');
         $stmt->execute(['usernameOrEmail' => $usernameOrEmail]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
         return $user ? new User($user['id'], $user['username'], $user['email'], $user['password'], true) : null;
@@ -81,7 +81,7 @@ class User
     public function create()
     {
         try {
-            $stmt = ORM::getPdo()->prepare('INSERT INTO users (username, email, password) VALUES (:username, :email, :password)');
+            $stmt = Database::getPdo()->prepare('INSERT INTO users (username, email, password) VALUES (:username, :email, :password)');
             return $stmt->execute([
                 'username' => $this->username,
                 'email' => $this->email,
@@ -96,7 +96,7 @@ class User
     public function update()
     {
         try {
-            $stmt = ORM::getPdo()->prepare('UPDATE users SET username = :username, email = :email, password = :password WHERE id = :id');
+            $stmt = Database::getPdo()->prepare('UPDATE users SET username = :username, email = :email, password = :password WHERE id = :id');
             return $stmt->execute([
                 'id' => $this->id,
                 'username' => $this->username,
@@ -112,7 +112,7 @@ class User
     public function delete(): bool
     {
         try {
-            $pdo = ORM::getPdo();
+            $pdo = Database::getPdo();
             $pdo->beginTransaction();
             $stmt = $pdo->prepare('DELETE FROM user_roles WHERE user_id = :id');
             $stmt->execute(['id' => $this->id]);
@@ -132,7 +132,7 @@ class User
 
     public static function getAll()
     {
-        $stmt = ORM::getPdo()->prepare('SELECT * FROM users');
+        $stmt = Database::getPdo()->prepare('SELECT * FROM users');
         $stmt->execute();
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return array_map(function($user) {
