@@ -5,17 +5,38 @@
 {% endblock %}
 
 {% block body %}
-
-<body>
-    <h1>Add New Card</h1>
-    <form method="POST" action="/cards/create">
-        <label>Name: <input type="text" name="name"></label>
-        <label>Attack: <input type="number" name="attack"></label>
-        <label>Defense: <input type="number" name="defense"></label>
-        <label>Rarity: <input type="text" name="rarity"></label>
-        <label>Price: <input type="number" step="0.01" name="price"></label>
-        <button type="submit">Add Card</button>
-    </form>
-</body>
-
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <h2 class="card-header">Add New Card</h2>
+                <div class="card-body">
+                    <form method="POST" action="/cards/create">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name:</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="attack" class="form-label">Attack:</label>
+                            <input type="number" class="form-control" id="attack" name="attack" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="defense" class="form-label">Defense:</label>
+                            <input type="number" class="form-control" id="defense" name="defense" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="rarity" class="form-label">Rarity:</label>
+                            <input type="text" class="form-control" id="rarity" name="rarity" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="price" class="form-label">Price:</label>
+                            <input type="number" step="0.01" class="form-control" id="price" name="price" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Card</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
