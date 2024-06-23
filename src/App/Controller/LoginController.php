@@ -2,7 +2,7 @@
 
 namespace App\App\Controller;
 
-use App\App\Database\ORM;
+use App\App\Model\User;
 use App\App\Model\UserRole;
 use App\Framework\BaseController;
 use App\Framework\Request;
@@ -16,7 +16,7 @@ class LoginController extends BaseController
             $usernameOrEmail = $request->getPost('usernameOrEmail');
             $password = $request->getPost('password');
 
-            $user = ORM::getUserByUsernameOrEmail($usernameOrEmail);
+            $user = User::getByUsernameOrEmail($usernameOrEmail);
 
             if (!$user) {
                 $this->handleFailedLogin($response, 'Invalid username or email');

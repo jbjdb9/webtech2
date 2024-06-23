@@ -29,6 +29,7 @@ $router->post('/register', [RegisterController::class, 'register']);
 
 $router->get('/admin', [AdminController::class, 'index']);
 $router->get('/profile', [ProfileController::class, 'index']);
+$router->post('/profile/update', [ProfileController::class, 'updateProfile']);
 $router->get('/user/{id}', [ProfileController::class, 'index']);
 
 $router->addMiddleware(new AuthMiddleware());
