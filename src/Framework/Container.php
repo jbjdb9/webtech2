@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Framework;
+
 use Exception;
 use ReflectionClass;
 
@@ -14,16 +15,24 @@ class Container
             return new \App\Framework\TemplateEngine('src/App/View/');
         });
 
-        $this->set(\App\Framework\Response::class, function () {
-            return new \App\Framework\Response('src/App/View/');
+        $this->set(\App\Framework\Router::class, function () {
+            return new \App\Framework\Router();
         });
 
+        $this->set(\App\Framework\Request::class, function () {
+            return new \App\Framework\Request();
+        });
+
+        $this->set(\App\Framework\Response::class, function () {
+            return new \App\Framework\Response();
+        });
+
+        // Register Models
         $this->set(\App\App\Model\Card::class, function () {
             return new \App\App\Model\Card();
         });
 
         $this->set(\App\App\Model\User::class, function () {
-            // De User klasse heeft een constructor die parameters verwacht. Voorbeeldwaarden zijn gebruikt.
             return new \App\App\Model\User(null, 'username', 'email@example.com', 'password', false);
         });
 
@@ -31,16 +40,40 @@ class Container
             return new \App\App\Model\UserRole();
         });
 
+        $this->set(\App\App\Model\Deck::class, function () {
+            return new \App\App\Model\Deck();
+        });
+
         $this->set(\App\App\Controller\CardController::class, function ($container) {
             return new \App\App\Controller\CardController(
-                $container->get(\App\Framework\Response::class),
-                $container->get(\App\App\Model\Card::class),
+                $container->get(\App\Framework\TemplateEngine::class),
+                $container->get(\App\App\Model\Card::class)
+            );
+        });
+
+        $this->set(\App\App\Controller\ProfileController::class, function ($container) {
+            return new \App\App\Controller\ProfileController(
+                $container->get(\App\Framework\TemplateEngine::class),
                 $container->get(\App\App\Model\User::class),
                 $container->get(\App\App\Model\UserRole::class)
             );
         });
+
+        $this->set(\App\App\Controller\DeckController::class, function ($container) {
+            return new \App\App\Controller\DeckController(
+                $container->get(\App\Framework\TemplateEngine::class),
+                $container->get(\App\App\Model\Deck::class),
+                $container->get(\App\App\Model\Card::class)
+            );
+        });
+
+        $this->set(\App\App\Controller\LoginController::class, function ($container) {
+            return new \App\App\Controller\LoginController(
+                $container->get(\App\Framework\TemplateEngine::class),
+                $container->get(\App\App\Model\User::class)
+            );
+        });
     }
-    
 
     public function set($name, $value)
     {
@@ -52,8 +85,7 @@ class Container
         if (!isset($this->services[$name])) {
             return $this->autoResolve($name);
         }
-
-        return $this->services[$name];
+        return $this->services[$name]($this);
     }
 
     private function autoResolve($name)
@@ -82,7 +114,6 @@ class Container
 
         foreach ($parameters as $parameter) {
             $dependency = $parameter->getClass();
-
             if ($dependency === null) {
                 if ($parameter->isDefaultValueAvailable()) {
                     $dependencies[] = $parameter->getDefaultValue();
