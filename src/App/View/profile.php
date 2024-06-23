@@ -7,8 +7,12 @@
 {% block body %}
 
 <h1>Username: {{ @@USERNAME }}</h1>
-<p>Email: {{ email }}</p>
+<p>Email: {{ @@EMAIL }}</p>
 
+<form method="POST" action="/profile/buy-premium" onsubmit="return confirm('Are you sure you want to buy premium? It costs about $3.50');">
+    <input type="hidden" name="id" value="{{ @@USERID }}">
+    <button type="submit" class="btn btn-warning">Buy Premium</button>
+</form>
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6">

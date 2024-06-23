@@ -30,6 +30,7 @@ class LoginController extends BaseController
 
             $_SESSION['userId'] = $user->getId();
             $_SESSION['username'] = $user->getUsername();
+            $_SESSION['email'] = $user->getEmail();
             $_SESSION['role'] = UserRole::getRoleNameByUserId($user->getId());
 
             error_log('User logged in, userId: ' . $_SESSION['userId'] . ', role: ' . $_SESSION['role']);

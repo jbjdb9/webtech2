@@ -24,6 +24,14 @@ abstract class BaseController
         if (isset($_SESSION['username'])) {
             $this->params['@@USERNAME'] = $_SESSION['username'];
         }
+
+        if (isset($_SESSION['email'])) {
+            $this->params['@@EMAIL'] = $_SESSION['email'];
+        }
+
+        if (isset($_SESSION['userId'])) {
+            $this->params['@@USERID'] = $_SESSION['userId'];
+        }
     }
 
     protected function renderTemplate($template, $params = [])

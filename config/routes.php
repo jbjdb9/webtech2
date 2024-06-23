@@ -36,6 +36,7 @@ $router->post('/admin/{id}/assign-admin', [AdminController::class, 'assignAdmin'
 $router->post('/admin/{id}/revoke-admin', [AdminController::class, 'revokeAdmin']);
 
 $router->get('/profile', [ProfileController::class, 'index']);
+$router->post('/profile/buy-premium', [ProfileController::class, 'buyPremium']);
 $router->post('/profile/update', [ProfileController::class, 'updateProfile']);
 $router->get('/user/{id}', [ProfileController::class, 'index']);
 

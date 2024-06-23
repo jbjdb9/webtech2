@@ -16,7 +16,7 @@ class AdminController extends BaseController
     public function assignAdmin($request)
     {
         $userId = $request->getPost('id');
-        UserRole::assignAdmin($userId);
+        UserRole::assignRole($userId, 2);
         header('Location: /admin');
         exit();
     }
@@ -24,7 +24,7 @@ class AdminController extends BaseController
     public function revokeAdmin($request)
     {
         $userId = $request->getPost('id'); //TODO: prevent revoking own access
-        UserRole::revokeAdmin($userId);
+        UserRole::revokeRole($userId, 2);
         header('Location: /admin');
         exit();
     }

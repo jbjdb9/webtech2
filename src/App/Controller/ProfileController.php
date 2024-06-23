@@ -3,6 +3,7 @@
 namespace App\App\Controller;
 
 use App\App\Model\User;
+use App\App\Model\UserRole;
 use App\Framework\BaseController;
 use App\Framework\Request;
 use App\Framework\Response;
@@ -12,6 +13,14 @@ class ProfileController extends BaseController
     public function index()
     {
         $this->renderTemplate('profile.php');
+    }
+
+    public function buyPremium($request)
+    {
+        $userId = $request->getPost('id');
+        UserRole::assignRole($userId, 1);
+        header('Location: /profile');
+        exit();
     }
 
     public function updateProfile(Request $request, Response $response)
