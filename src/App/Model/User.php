@@ -109,12 +109,22 @@ class User
         }
     }
 
-    public function delete()
+    public function delete(): bool
     {
         try {
-            $stmt = ORM::getPdo()->prepare('DELETE FROM users WHERE id = :id');
-            return $stmt->execute(['id' => $this->id]);
+            $pdo = ORM::getPdo();
+            $pdo->beginTransaction();
+            $stmt = $pdo->prepare('DELETE FROM user_roles WHERE user_id = :id');
+            $stmt->execute(['id' => $this->id]);
+
+            $stmt = $pdo->prepare('DELETE FROM users WHERE id = :id');
+            $stmt->execute(['id' => $this->id]);
+
+            $pdo->commit();
+
+            return true;
         } catch (PDOException $e) {
+            $pdo->rollBack();
             echo $e->getMessage();
             return false;
         }
