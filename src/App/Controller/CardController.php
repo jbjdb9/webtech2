@@ -39,6 +39,24 @@ class CardController extends BaseController
         ]);
     }
 
+    public function removeCardFromDeck(Request $request, Response $response)
+    {
+        $deckId = $request->getPost('deckId');
+        $cardId = $request->getPost('cardId');
+
+        $deck = Deck::getById($deckId);
+        $card = Card::getById($cardId);
+
+        if ($deck && $card) {
+            $deck->removeCard($card);
+            $response->redirect('/decks/' . $deck->id);
+        } else {
+            $response->setStatusCode(404);
+        }
+
+        return $response;
+    }
+
     public function addCardToDeck(Request $request, Response $response)
     {
         $deckId = $request->getPost('deck_id');

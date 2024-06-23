@@ -6,13 +6,13 @@
 
 {% block body %}
 
-<h1>Edit Deck: {{ name }}</h1>
-<form action="/deck/update/{{ id }}" method="post">
-    <label for="name">Deck Name:</label>
-    <input type="text" id="name" name="name" value="{{ name }}" required>
-    <label for="user_id">User ID:</label>
-    <input type="text" id="user_id" name="user_id" value="{{ @@USERID }}" required>
-    <button type="submit">Save Changes</button>
+<h1 class="mb-4">Rename Deck: {{ name }}</h1>
+<form action="/deck/{{ id }}/update" method="post">
+    <div class="mb-3">
+        <label for="name" class="form-label">Deck Name:</label>
+        <input type="text" id="name" name="name" value="{{ name }}" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Save Changes</button>
 </form>
 
 {% endblock %}

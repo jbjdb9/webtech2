@@ -7,12 +7,11 @@
 {% block body %}
 
 <h1>Create New Deck</h1>
-<form action="/deck/create" method="post">
-    <label for="name">Deck Name:</label>
-    <input type="text" id="name" name="name" required>
-    <label for="user_id">User ID:</label>
-    <input type="text" id="user_id" name="user_id" required>
-    <button type="submit">Save Deck</button>
+<form action="/decks/create" method="POST" class="mt-4">
+    <div class="mb-3">
+        <label for="name" class="form-label">Deck Name:</label>
+        <input type="text" id="name" name="name" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Save Deck</button>
 </form>
-
 {% endblock %}

@@ -23,12 +23,14 @@ $router->get('/cards/{id}/edit', [CardController::class, 'edit']);
 $router->post('/cards/{id}/delete', [CardController::class, 'delete']);
 
 $router->get('/decks', [DeckController::class, 'index']);
-$router->get('/deck/create', [DeckController::class, 'create']);
-$router->post('/deck/create', [DeckController::class, 'store']);
+$router->get('/decks/create', [DeckController::class, 'create']);
+$router->post('/decks/create', [DeckController::class, 'store']);
 $router->get('/deck/{id}', [DeckController::class, 'show']);
 $router->get('/deck/{id}/edit', [DeckController::class, 'edit']);
+$router->post('/deck/{id}/update', [DeckController::class, 'update']);
 $router->get('/deck/{id}/delete', [DeckController::class, 'delete']);
 $router->post('/addCardToDeck', [CardController::class, 'addCardToDeck']);
+$router->post('/removeCardFromDeck', [CardController::class, 'removeCardFromDeck']);
 
 $router->get('/login', [LoginController::class, 'login']);
 $router->post('/login', [LoginController::class, 'login']);

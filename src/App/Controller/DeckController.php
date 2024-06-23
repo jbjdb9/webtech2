@@ -19,10 +19,12 @@ class DeckController extends BaseController
     {
         $id = ($params['id']);
         $deck = Deck::getById($id);
+        $cards = $deck->getCards();
 
         $this->renderTemplate('decks/show.php', [
             'name' => $deck->getName(),
             'id' => $deck->getId(),
+            'cards' => $cards
         ]);
     }
 
@@ -35,7 +37,7 @@ class DeckController extends BaseController
     {
         $deck = new Deck();
         $deck->setName($request->getPost('name'));
-        $deck->setUserId($request->getPost('user_id')); 
+        $deck->setUserId($_SESSION['userId']);
         $deck->create();
         $response->redirect('/decks');
     }
@@ -53,11 +55,10 @@ class DeckController extends BaseController
 
     public function update(Request $request, Response $response, $params)
     {
-        $deck = new Deck();
-        $deck->getById($params['id']);
+        $id = $params['id'];
+        $deck = Deck::getById($id);
         $deck->setName($request->getPost('name'));
-        $deck->setUserId($request->getPost('user_id'));
-        $deck->create();
+        $deck->update();
         $response->redirect('/decks');
     }
 

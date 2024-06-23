@@ -36,10 +36,8 @@ abstract class BaseController
 
     protected function renderTemplate($template, $params = [])
     {
-        // Merge the params array with the array of all defined variables
         $params = array_merge($this->params, get_defined_vars(), $params);
 
-        // Use the Response object to set the template and parameters
         $this->response->setTemplate($template, $params);
     }
 

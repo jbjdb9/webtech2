@@ -8,11 +8,6 @@ class HomeController extends BaseController
 {
     public function index()
     {
-        // dummy data
-        $score = 100;
-
-        $this->renderTemplate('home.php', [
-            'score' => $score
-        ]);
+        $this->renderTemplate('home.php');
     }
 }

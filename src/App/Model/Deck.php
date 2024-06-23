@@ -45,8 +45,21 @@ Class Deck
         $this->userId = $userId;
     }
 
-    public function getCards() {
-        return $this->cards;
+    public function getCards()
+    {
+        $stmt = Database::getPdo()->prepare('SELECT card_id FROM deck_cards WHERE deck_id = :deck_id');
+        $stmt->execute(['deck_id' => $this->id]);
+        $cardIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+        $cards = [];
+        foreach ($cardIds as $cardId) {
+            $card = Card::getById($cardId);
+            if ($card) {
+                $cards[] = $card;
+            }
+        }
+
+        return $cards;
     }
 
     public function setCards($cards) {
@@ -69,10 +82,8 @@ Class Deck
     }
 
     public function removeCard(Card $card) {
-        $key = array_search($card, $this->cards);
-        if ($key !== false) {
-            unset($this->cards[$key]);
-        }
+        $stmt = Database::getPdo()->prepare('DELETE FROM deck_cards WHERE deck_id = :deck_id AND card_id = :card_id');
+        $stmt->execute(['deck_id' => $this->id, 'card_id' => $card->getId()]);
     }
 
     public static function all()
@@ -129,41 +140,29 @@ Class Deck
     {
         try {
             $pdo = Database::getPdo();
-            $pdo->beginTransaction();
-
-            if ($this->id) {
-                $stmt = $pdo->prepare('UPDATE decks SET user_id = :user_id, name = :name WHERE id = :id');
-                $stmt->execute([
-                    'id' => $this->id,
-                    'user_id' => $this->userId,
-                    'name' => $this->name
-                ]);
-            } else {
-                $stmt = $pdo->prepare('INSERT INTO decks (user_id, name) VALUES (:user_id, :name)');
-                $stmt->execute([
-                    'user_id' => $this->userId,
-                    'name' => $this->name
-                ]);
-                $this->id = $pdo->lastInsertId();
-            }
-
-            // Verwijder alle kaarten die bij dit deck horen
-            $stmt = $pdo->prepare('DELETE FROM deck_cards WHERE deck_id = :deck_id');
-            $stmt->execute(['deck_id' => $this->id]);
-
-            // Voeg de kaarten die bij dit deck horen opnieuw toe
-            $stmt = $pdo->prepare('INSERT INTO deck_cards (deck_id, card_id) VALUES (:deck_id, :card_id)');
-            foreach ($this->cards as $card) {
-                $stmt->execute([
-                    'deck_id' => $this->id,
-                    'card_id' => $card->getId()
-                ]);
-            }
-
-            $pdo->commit();
+            $stmt = $pdo->prepare('INSERT INTO decks (user_id, name) VALUES (:user_id, :name)');
+            $stmt->execute([
+                'user_id' => $this->userId,
+                'name' => $this->name
+            ]);
+            $this->id = $pdo->lastInsertId();
             return true;
         } catch (PDOException $e) {
-            $pdo->rollBack();
+            echo $e->getMessage();
+            return false;
+        }
+    }
+
+    public function update()
+    {
+        try {
+            $stmt = Database::getPdo()->prepare('UPDATE decks SET name = :name WHERE id = :id');
+            $stmt->execute([
+                'name' => $this->name,
+                'id' => $this->id
+            ]);
+            return true;
+        } catch (PDOException $e) {
             echo $e->getMessage();
             return false;
         }
