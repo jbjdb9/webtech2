@@ -12,6 +12,7 @@ class User
     private $username;
     private $email;
     private $password;
+    public $role;
 
     public function __construct($id, $username, $email, $password, $isHashed = false)
     {
@@ -125,7 +126,9 @@ class User
         $stmt->execute();
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return array_map(function($user) {
-            return new User($user['id'], $user['username'], $user['email'], $user['password'], true);
+            $userInstance = new User($user['id'], $user['username'], $user['email'], $user['password'], true);
+            $userInstance->role = UserRole::getRoleNameByUserId($user['id']);
+            return $userInstance;
         }, $users);
     }
 }

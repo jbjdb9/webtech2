@@ -4,15 +4,15 @@
 
 - Admin:
   - Username: admin
-  - Password: adminpass
+  - Password: admin123
 
 - Premium User:
   - Username: premium
-  - Password: premiumpass
+  - Password: premium123
 
 - Regular User:
   - Username: user
-  - Password: userpass
+  - Password: user123
 
 ## Installatie
 

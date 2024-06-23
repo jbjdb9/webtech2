@@ -42,4 +42,18 @@ class UserRole {
         // Return the role name
         return $stmt->fetchColumn();
     }
+
+    public static function assignAdmin($userId)
+    {
+        $pdo = ORM::getPdo();
+        $stmt = $pdo->prepare('INSERT INTO user_roles (user_id, role_id) VALUES (:user_id, 2)');
+        $stmt->execute(['user_id' => $userId]);
+    }
+
+    public static function revokeAdmin($userId)
+    {
+        $pdo = ORM::getPdo();
+        $stmt = $pdo->prepare('DELETE FROM user_roles WHERE user_id = :user_id AND role_id = 2');
+        $stmt->execute(['user_id' => $userId]);
+    }
 }

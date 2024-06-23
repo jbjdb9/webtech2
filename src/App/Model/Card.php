@@ -81,7 +81,7 @@ class Card
     public function setSetId($set_id) {
         $this->set_id = $set_id;
     }
-
+//TODO: rename to getById for consistency
     public static function find($id) {
         $stmt = ORM::getPdo()->prepare('SELECT * FROM cards WHERE id = :id');
         $stmt->execute(['id' => $id]);
@@ -123,7 +123,7 @@ class Card
 
         return $cards;
     }
-
+//TODO: rename to create for consistency
     public function save() {
         $pdo = ORM::getPdo();
 
