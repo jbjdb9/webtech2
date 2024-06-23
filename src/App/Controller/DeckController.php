@@ -12,7 +12,7 @@ class DeckController extends BaseController
     public function index()
     {
         $decks = Deck::all(); 
-        $this->renderTemplate('decks.php', ['decks' => $decks]);
+        $this->renderTemplate('decks/index.php', ['decks' => $decks]);
     }
 
 
@@ -20,11 +20,11 @@ class DeckController extends BaseController
     {
         $deck = new Deck();
         $deck->loadById($params['id']);
-        $this->renderTemplate('deck_show.php', ['deck' => $deck]);
+        $this->renderTemplate('decks/show.php', ['deck' => $deck]);
     }
     public function create(Request $request, Response $response)
     {
-        $this->renderTemplate('deck_create.php');
+        $this->renderTemplate('decks/create.php');
     }
 
     public function store(Request $request, Response $response)
@@ -40,7 +40,7 @@ class DeckController extends BaseController
     {
         $deck = new Deck();
         $deck->loadById($params['id']);
-        $this->renderTemplate('deck_edit.php', ['deck' => $deck]);
+        $this->renderTemplate('decks/edit.php', ['deck' => $deck]);
     }
 
     public function update(Request $request, Response $response, $params)

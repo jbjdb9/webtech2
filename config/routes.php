@@ -23,6 +23,11 @@ $router->get('/cards/{id}/edit', [CardController::class, 'edit']);
 $router->post('/cards/{id}/delete', [CardController::class, 'delete']);
 
 $router->get('/decks', [DeckController::class, 'index']);
+$router->get('/deck/create', [DeckController::class, 'create']);
+$router->get('/deck/{id}', [DeckController::class, 'show']);
+$router->get('/deck/{id}/edit', [DeckController::class, 'edit']);
+$router->get('/deck/{id}/delete', [DeckController::class, 'delete']);
+$router->post('/deck/store', [DeckController::class, 'store']);
 
 $router->get('/login', [LoginController::class, 'login']);
 $router->post('/login', [LoginController::class, 'login']);
