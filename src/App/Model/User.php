@@ -123,7 +123,9 @@ class User
     {
         $stmt = ORM::getPdo()->prepare('SELECT * FROM users');
         $stmt->execute();
-        $stmt->setFetchMode(PDO::FETCH_CLASS, 'App\App\Model\User');
-        return $stmt->fetchAll();
+        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return array_map(function($user) {
+            return new User($user['id'], $user['username'], $user['email'], $user['password'], true);
+        }, $users);
     }
 }

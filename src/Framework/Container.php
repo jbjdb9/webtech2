@@ -14,6 +14,10 @@ class Container
             return new \App\Framework\TemplateEngine('src/App/View/');
         });
 
+        $this->set(\App\Framework\Response::class, function () {
+            return new \App\Framework\Response('src/App/View/');
+        });
+
         $this->set(\App\App\Model\Card::class, function () {
             return new \App\App\Model\Card();
         });
@@ -29,7 +33,7 @@ class Container
 
         $this->set(\App\App\Controller\CardController::class, function ($container) {
             return new \App\App\Controller\CardController(
-                $container->get(\App\Framework\TemplateEngine::class),
+                $container->get(\App\Framework\Response::class),
                 $container->get(\App\App\Model\Card::class),
                 $container->get(\App\App\Model\User::class),
                 $container->get(\App\App\Model\UserRole::class)

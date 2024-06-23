@@ -19,7 +19,7 @@ $request = new Request();
 $templateDir = __DIR__ . '/../src/App/View';
 $response = new Response($templateDir);
 
-$router = new Router($container);
+$router = new Router();
 
 $router = require_once __DIR__ . '/../config/routes.php';
 

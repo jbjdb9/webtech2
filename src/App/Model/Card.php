@@ -3,6 +3,7 @@
 namespace App\App\Model;
 
 use App\App\Database\ORM;
+use PDO;
 
 class Card
 {
@@ -82,9 +83,7 @@ class Card
     }
 
     public static function find($id) {
-        $pdo = ORM::getPdo();
-
-        $stmt = $pdo->prepare('SELECT * FROM cards WHERE id = :id');
+        $stmt = ORM::getPdo()->prepare('SELECT * FROM cards WHERE id = :id');
         $stmt->execute(['id' => $id]);
         $row = $stmt->fetch();
 

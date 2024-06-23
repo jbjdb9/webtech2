@@ -2,6 +2,8 @@
 
 namespace App\Framework;
 
+use ReflectionObject;
+
 /**
  * Class TemplateEngine
  *
@@ -40,6 +42,7 @@ class TemplateEngine
         $templateContent = $this->evaluateIfExpressions($templateContent, $params);
         $templateContent = $this->evaluateIfIsExpressions($templateContent, $params);
         $templateContent = $this->evaluateForElseExpressions($templateContent, $params);
+        $templateContent = $this->evaluateExpressions($templateContent);
         return $templateContent;
     }
 
@@ -110,6 +113,28 @@ class TemplateEngine
     }
 
     /**
+     * Evaluates the expressions in a template content.
+     *
+     * @param string $content The template content.
+     * @return string The template content with evaluated expressions.
+     */
+    protected function evaluateExpressions($content)
+    {
+        return preg_replace_callback('/{{ (.*?) }}/', function ($matches) {
+            $expression = $matches[1];
+
+            // Sanitize the expression
+            $expression = preg_replace('/[^0-9+\-.*\/() ]/', '', $expression);
+
+            if (preg_match('/^([0-9+\-.*\/() ])+$/', $expression)) {
+                return eval('return ' . $expression . ';');
+            }
+
+            return $matches[0];
+        }, $content);
+    }
+
+    /**
      * Checks if a variable is defined in a template content.
      *
      * @param string $content The template content.
@@ -160,10 +185,23 @@ class TemplateEngine
             $forContent = $matches[3];
             $elseContent = $matches[4];
 
-            if (isset($params[$array]) && is_array($params[$array]) && !empty($params[$array])) {
+            if (is_array($params[$array]) && !empty($params[$array])) {
                 $result = '';
                 foreach ($params[$array] as $item) {
-                    $result .= str_replace(["{{ $variable.username }}", "{{ $variable.email }}"], [$item->username, $item->email], $forContent);
+                    $itemContent = $forContent;
+                    if (is_array($item)) {
+                        foreach ($item as $property => $value) {
+                            $itemContent = str_replace("{{ $variable.$property }}", $value, $itemContent);
+                        }
+                    } elseif (is_object($item)) {
+                        $reflection = new ReflectionObject($item);
+                        foreach ($reflection->getProperties() as $property) {
+                            $property->setAccessible(true);
+                            $value = $property->getValue($item);
+                            $value = $value !== null ? $value : '';
+                            $itemContent = str_replace("{{ $variable." . $property->getName() . " }}", $value, $itemContent);                        }
+                    }
+                    $result .= $itemContent;
                 }
                 return $result;
             }

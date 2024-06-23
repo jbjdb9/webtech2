@@ -5,89 +5,87 @@ namespace App\App\Controller;
 use App\App\Model\Card;
 use App\App\Model\User;
 use App\App\Model\UserRole;
-use App\Framework\TemplateEngine;
-use App\Framework\Response;
+use App\Framework\BaseController;
 use App\Framework\Request;
+use App\Framework\Response;
 
-class CardController
+class CardController extends BaseController
 {
-    protected $card;
-    protected $user;
-    protected $userRole;
-    protected $templateEngine;
-
-    public function __construct(TemplateEngine $templateEngine, Card $card, User $user, UserRole $userRole)
+    public function index()
     {
-        $this->card = $card;
-        $this->user = $user;
-        $this->userRole = $userRole;
-        $this->templateEngine = $templateEngine;
+        $cards = Card::all();
+        $this->renderTemplate('cards/index.php', ['cards' => $cards]);
     }
 
-    public function index(Request $request, Response $response)
+    public function show(Request $request, Response $response, $params)
     {
-        $cards = $this->card->all();
-        $response->setTemplate('cards/index.php', ['cards' => $cards]);
-        return $response;
+        $id = $params['id'];
+        $card = Card::find($id);
+
+        if ($card === null) {
+            $response->redirect('/cards');
+            return;
+        }
+
+        $this->renderTemplate('cards/show.php', [
+            'name' => $card->getName(),
+            'attack' => $card->getAttack(),
+            'defense' => $card->getDefense(),
+            'rarity' => $card->getRarity(),
+            'market_price' => $card->getPrice(),
+            'id' => $card->getId()
+        ]);
     }
 
-    public function show(Request $request, Response $response, $id)
+    public function edit(Request $request, Response $response, $params)
     {
-        $card = $this->card->find($id);
-        $response->setTemplate('cards/show.php', ['card' => $card]);
-        return $response;
+        $id = $params['id'];
+        $card = Card::find($id);
+        $this->renderTemplate('cards/edit.php', [
+            'name' => $card->getName(),
+            'attack' => $card->getAttack(),
+            'defense' => $card->getDefense(),
+            'rarity' => $card->getRarity(),
+            'market_price' => $card->getPrice(),
+            'id' => $card->getId()
+        ]);
     }
 
     public function create(Request $request, Response $response)
     {
-        $role = $this->userRole->getRoleNameByUserId($this->user->getId());
-
-        if ($role !== 'admin') {
-            $response->setStatusCode(401);
-            return $response;
-        }
-
-        $response->setTemplate('cards/create.php');
-        return $response;
+        $this->renderTemplate('cards/create.php');
     }
 
     public function store(Request $request, Response $response)
     {
-        if ($request->isPost()) {
-            $role = $this->userRole->getRoleNameByUserId($this->user->getId());
+        $card = new Card();
+        $card->setName($request->getPost('name'));
+        $card->setAttack($request->getPost('attack'));
+        $card->setDefense($request->getPost('defense'));
+        $card->setRarity($request->getPost('rarity'));
+        $card->setPrice($request->getPost('price'));
+        $card->setSetId($request->getPost('set'));
+        $card->save();
 
-            if ($role !== 'admin') {
-                $response->setStatusCode(401);
-                return $response;
-            }
-
-            $card = new Card();
-            $card->name = $request->getPost('name');
-            $card->attack = $request->getPost('attack');
-            $card->defense = $request->getPost('defense');
-            $card->set = $request->getPost('set');
-            $card->rarity = $request->getPost('rarity');
-            $card->market_price = $request->getPost('market_price');
-            $card->save();
-
-            $response->setStatusCode(201);
-            return $response;
-        }
+        $response->setStatusCode(201);
+        $response->redirect('/cards');
+        return $response;
     }
 
-    public function delete(Request $request, Response $response, $id)
+    public function delete(Request $request, Response $response, $args)
     {
-        $role = $this->userRole->getRoleNameByUserId($this->user->getId());
+        $id = (string) $args['id'];
+        $card = Card::find($id);
 
-        if ($role !== 'admin') {
-            $response->setStatusCode(401);
+        if ($card === null) {
+            $response->setStatusCode(404);
             return $response;
         }
 
-        $card = $this->card->find($id);
         $card->delete();
 
         $response->setStatusCode(200);
+        $response->redirect('/cards');
         return $response;
     }
 }

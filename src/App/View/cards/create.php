@@ -1,11 +1,14 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Add New Card</title>
-</head>
+{% extends 'base.php' %}
+
+{% block header %}
+{% include 'header.php' %}
+{% endblock %}
+
+{% block body %}
+
 <body>
     <h1>Add New Card</h1>
-    <form method="POST" action="/cards">
+    <form method="POST" action="/cards/create">
         <label>Name: <input type="text" name="name"></label>
         <label>Attack: <input type="number" name="attack"></label>
         <label>Defense: <input type="number" name="defense"></label>
@@ -14,4 +17,5 @@
         <button type="submit">Add Card</button>
     </form>
 </body>
-</html>
+
+{% endblock %}

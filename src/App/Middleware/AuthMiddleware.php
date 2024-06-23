@@ -11,7 +11,7 @@ class AuthMiddleware
         error_log('Session started');
         $allowedPaths = ['/login', '/register']; // accessible without login
         $premiumPaths = ['/decks']; // accessible only by Premium users or Admins
-        $adminPaths = ['/admin']; // accessible only by Admins
+        $adminPaths = ['/admin', 'cards/create', 'cards/{id}/edit']; // accessible only by Admins
 
         if (!in_array($request->getPath(), $allowedPaths) && !isset($_SESSION['userId'])) {
             header('Location: /login');

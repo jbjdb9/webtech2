@@ -15,9 +15,12 @@ $router = new Router();
 $router->get('/', [CardController::class, 'index']);
 $router->get('/home', [HomeController::class, 'index']);
 
-$router->get('/cards', [CardController::class, 'show']);
-$router->post('/cards', [CardController::class, 'create']);
-$router->delete('/cards', [CardController::class, 'delete']);
+$router->get('/cards', [CardController::class, 'index']);
+$router->get('/cards/create', [CardController::class, 'create']); //TODO: fix bug where it consider this as an {id} path if placed after that route
+$router->post('/cards/create', [CardController::class, 'store']);
+$router->get('/cards/{id}', [CardController::class, 'show']);
+$router->get('/cards/{id}/edit', [CardController::class, 'edit']);
+$router->post('/cards/{id}/delete', [CardController::class, 'delete']);
 
 $router->get('/decks', [DeckController::class, 'index']);
 

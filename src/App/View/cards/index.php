@@ -1,19 +1,23 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Cards</title>
-</head>
-<body>
-    <h1>Cards</h1>
+{% extends 'base.php' %}
+
+{% block header %}
+{% include 'header.php' %}
+{% endblock %}
+
+{% block body %}
+
+<h1>Cards</h1>
     <a href="/cards/create">Add New Card</a>
     <ul>
-        <?php foreach ($cards as $card): ?>
+        {% for card in cards %}
             <li>
-                <a href="/cards/<?= $card->getId() ?>">
-                    <?= $card->getName() ?>
+                <a href="/cards/{{ card.id }}">
+                    {{ card.name }}
                 </a>
             </li>
-        <?php endforeach; ?>
+        {% else %}
+            No cards found
+        {% endfor %}
     </ul>
-</body>
-</html>
+
+{% endblock %}
