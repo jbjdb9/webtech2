@@ -1,13 +1,13 @@
 <?php
 
 namespace App\App\Controller;
-use App\Framework\Request;
-use App\Framework\Response;
-
-class AdminController
+use App\App\Model\User;
+use App\Framework\BaseController;
+class AdminController extends BaseController
 {
-    public function index(Request $request, Response $response)
+    public function index()
     {
-        $response->setTemplate('admin.php');
+        $users = User::getAll();
+        $this->renderTemplate('admin.php', ['users' => $users]);
     }
 }

@@ -38,7 +38,9 @@ class TemplateEngine
 
         $templateContent = $this->replaceParams($templateContent, $params);
         $templateContent = $this->evaluateIfExpressions($templateContent, $params);
-        return $this->evaluateExpressions($templateContent);
+        $templateContent = $this->evaluateIfIsExpressions($templateContent, $params);
+        $templateContent = $this->evaluateForElseExpressions($templateContent, $params);
+        return $templateContent;
     }
 
     /**
@@ -95,9 +97,12 @@ class TemplateEngine
      * @param array $params The parameters to replace in the template content.
      * @return string The template content with replaced parameters.
      */
-    protected function replaceParams($content, $params)
+    private function replaceParams($content, $params)
     {
         foreach ($params as $key => $value) {
+            if (is_array($value)) {
+                continue;
+            }
             $content = str_replace('{{ ' . $key . ' }}', $value, $content);
         }
 
@@ -105,29 +110,7 @@ class TemplateEngine
     }
 
     /**
-     * Evaluates the expressions in a template content.
-     *
-     * @param string $content The template content.
-     * @return string The template content with evaluated expressions.
-     */
-    protected function evaluateExpressions($content)
-    {
-        return preg_replace_callback('/{{ (.*?) }}/', function ($matches) {
-            $expression = $matches[1];
-
-            // Sanitize the expression
-            $expression = preg_replace('/[^0-9+\-.*\/() ]/', '', $expression);
-
-            if (preg_match('/^([0-9+\-.*\/() ])+$/', $expression)) {
-                return eval('return ' . $expression . ';');
-            }
-
-            return $matches[0];
-        }, $content);
-    }
-
-    /**
-     * Evaluates the if expressions in a template content.
+     * Checks if a variable is defined in a template content.
      *
      * @param string $content The template content.
      * @param array $params The parameters to use in the if expressions.
@@ -144,6 +127,48 @@ class TemplateEngine
             }
 
             return '';
+        }, $content);
+    }
+
+    /**
+     * Checks if a variable is equal to a value in a template content.
+     *
+     * @param string $content The template content.
+     * @param array $params The parameters to use in the if expressions.
+     * @return string The template content with evaluated if expressions.
+     */
+    protected function evaluateIfIsExpressions($content, $params)
+    {
+        return preg_replace_callback('/{% if (.*?) == (.*?) %}(.*?){% endif %}/s', function ($matches) use ($params) {
+            $variable = $matches[1];
+            $value = $matches[2];
+            $content = $matches[3];
+
+            if (isset($params[$variable]) && $params[$variable] == $value) {
+                return $content;
+            }
+
+            return '';
+        }, $content);
+    }
+
+    protected function evaluateForElseExpressions($content, $params)
+    {
+        return preg_replace_callback('/{% for (.*?) in (.*?) %}(.*?){% else %}(.*?){% endfor %}/s', function ($matches) use ($params) {
+            $variable = $matches[1];
+            $array = $matches[2];
+            $forContent = $matches[3];
+            $elseContent = $matches[4];
+
+            if (isset($params[$array]) && is_array($params[$array]) && !empty($params[$array])) {
+                $result = '';
+                foreach ($params[$array] as $item) {
+                    $result .= str_replace(["{{ $variable.username }}", "{{ $variable.email }}"], [$item->username, $item->email], $forContent);
+                }
+                return $result;
+            }
+
+            return $elseContent;
         }, $content);
     }
 }

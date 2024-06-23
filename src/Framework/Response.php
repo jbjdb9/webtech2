@@ -10,11 +10,10 @@ class Response
     private $engine;
     private $data = [];
 
-    public function __construct()
+    public function __construct($templateDir)
     {
-        $this->engine = new TemplateEngine(__DIR__ . '/../App/View');
+        $this->engine = new TemplateEngine($templateDir);
     }
-
     public function setStatusCode($code)
     {
         $this->statusCode = $code;

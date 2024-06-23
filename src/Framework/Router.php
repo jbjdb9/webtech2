@@ -43,7 +43,8 @@ class Router
                     if (preg_match($route['pattern'], $request->getPath(), $matches)) {
                         $params = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
                         list($class, $method) = $route['handler'];
-                        (new $class)->$method($request, $response, $params);
+                        // Instantiate the controller and pass the Response object
+                        (new $class($response))->$method($request, $response, $params);
                         return;
                     }
                 }

@@ -13,12 +13,15 @@
                     <a class="nav-link" href="/cards">Cards</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="/decks">Decks</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="/admin">Admin</a>
                 </li>
             </ul>
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="/profile">{{ username }}</a>
+                    <a class="nav-link" href="/profile">{{ @@USERNAME }}</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-danger" href="/logout">Log out</a>

@@ -15,7 +15,9 @@ $container->set(UserService::class, function() {
 });
 
 $request = new Request();
-$response = new Response();
+
+$templateDir = __DIR__ . '/../src/App/View';
+$response = new Response($templateDir);
 
 $router = new Router($container);
 

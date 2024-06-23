@@ -2,12 +2,12 @@
 
 namespace App\App\Controller;
 
-use App\App\Database\ORM;
 use App\App\Model\User;
+use App\Framework\BaseController;
 use App\Framework\Request;
 use App\Framework\Response;
 
-class RegisterController
+class RegisterController extends BaseController
 {
     public function register(Request $request, Response $response)
     {
@@ -15,21 +15,27 @@ class RegisterController
             $username = $request->getPost('username');
             $email = $request->getPost('email');
             $password = $request->getPost('password');
+            $confirm_password = $request->getPost('confirm_password');
 
-            if (empty($username) || empty($email) || empty($password)) {
-                $response->setTemplate('register.php', ['error' => 'All fields are required.']);
+            if (empty($username) || empty($email) || empty($password) || empty($confirm_password)) {
+                $this->renderTemplate('register.php', ['error' => 'All fields are required.']);
+                return;
+            }
+
+            if ($password !== $confirm_password) {
+                $this->renderTemplate('register.php', ['error' => 'Passwords do not match.']);
                 return;
             }
 
             $user = new User(null, $username, $email, $password, false);
 
-            if (ORM::createUser($user)) {
+            if ($user->create()) {
                 $response->redirect('/login');
             } else {
                 $response->setTemplate('register.php', ['error' => 'Registration failed. Please try again.']);
             }
         } else {
-            $response->setTemplate('register.php');
+            $this->renderTemplate('register.php');
         }
     }
 }

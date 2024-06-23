@@ -20,13 +20,17 @@
                             <label for="password">Password:</label>
                             <input type="password" id="password" name="password" class="form-control" required>
                         </div>
+                        <div class="form-group">
+                            <label for="confirm_password">Confirm Password:</label>
+                            <input type="password" id="confirm_password" name="confirm_password" class="form-control" required>
+                        </div>
                         <div class="form-group mt-2 d-flex justify-content-between align-items-center">
                             <input type="submit" value="Register" class="btn btn-primary">
                             <a href="/login" class="btn btn-link">Log in instead</a>
                         </div>
                     </form>
                     {% if error is defined %}
-                    <div class="alert alert-danger" role="alert">
+                    <div class="alert alert-danger mt-4" role="alert">
                         {{ error }}
                     </div>
                     {% endif %}

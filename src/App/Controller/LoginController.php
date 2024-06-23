@@ -2,12 +2,13 @@
 
 namespace App\App\Controller;
 
-use App\App\Database\ORM;
+use App\App\Model\User;
 use App\App\Model\UserRole;
+use App\Framework\BaseController;
 use App\Framework\Request;
 use App\Framework\Response;
 
-class LoginController
+class LoginController extends BaseController
 {
     public function login(Request $request, Response $response)
     {
@@ -15,12 +16,7 @@ class LoginController
             $usernameOrEmail = $request->getPost('usernameOrEmail');
             $password = $request->getPost('password');
 
-//            if (empty($usernameOrEmail) || empty($password)) {
-//                $this->handleFailedLogin($response, 'Login failed: username or password not provided');
-//                return;
-//            }
-
-            $user = ORM::getUserByUsernameOrEmail($usernameOrEmail);
+            $user = User::getByUsernameOrEmail($usernameOrEmail);
 
             if (!$user) {
                 $this->handleFailedLogin($response, 'Invalid username or email');
@@ -33,24 +29,20 @@ class LoginController
             }
 
             $_SESSION['userId'] = $user->getId();
+            $_SESSION['username'] = $user->getUsername();
             $_SESSION['role'] = UserRole::getRoleNameByUserId($user->getId());
-
-//            if (empty($_SESSION['userId'])) {
-//                $this->handleFailedLogin($response, 'Login failed: unable to store user ID in session');
-//                return;
-//            }
 
             error_log('User logged in, userId: ' . $_SESSION['userId'] . ', role: ' . $_SESSION['role']);
             $response->redirect('/home');
         } else {
-            $response->setTemplate('login.php');
+            $this->renderTemplate('login.php');
         }
     }
 
     private function handleFailedLogin(Response $response, $errorMessage)
     {
         error_log($errorMessage);
-        $response->setTemplate('login.php', ['error' => $errorMessage]);
+        $this->renderTemplate('login.php', ['error' => $errorMessage]);
     }
 
     public function logout(Request $request, Response $response)

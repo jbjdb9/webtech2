@@ -2,19 +2,16 @@
 
 namespace App\App\Controller;
 
-use App\Framework\Request;
-use App\Framework\Response;
+use App\Framework\BaseController;
 
-class HomeController
+class HomeController extends BaseController
 {
-    public function index(Request $request, Response $response)
+    public function index()
     {
-        // Dummy data for now
-        $username = 'John Doe';
+        // dummy data
         $score = 100;
 
-        $response->setTemplate('home.php', [
-            'username' => $username,
+        $this->renderTemplate('home.php', [
             'score' => $score
         ]);
     }
