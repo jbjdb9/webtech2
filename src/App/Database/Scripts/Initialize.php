@@ -46,6 +46,26 @@ try {
     )
     ");
 
+    $pdo->exec("
+    CREATE TABLE IF NOT EXISTS decks (
+        id INTEGER PRIMARY KEY,
+        user_id INTEGER NOT NULL,
+        name TEXT NOT NULL,
+        FOREIGN KEY(user_id) REFERENCES users(id)
+    )
+    ");
+
+    $pdo->exec("
+    CREATE TABLE IF NOT EXISTS deck_cards (
+        deck_id INTEGER NOT NULL,
+        card_id INTEGER NOT NULL,
+        FOREIGN KEY(deck_id) REFERENCES decks(id),
+        FOREIGN KEY(card_id) REFERENCES cards(id)
+    )
+    ");
+
+
+
     echo "Database tables created successfully.\n";
 } catch (PDOException $e) {
     echo "Error: " . $e->getMessage();
