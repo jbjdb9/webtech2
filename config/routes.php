@@ -16,7 +16,7 @@ $router->get('/', [HomeController::class, 'index']);
 $router->get('/home', [HomeController::class, 'index']);
 
 $router->get('/cards', [CardController::class, 'index']);
-$router->get('/cards/create', [CardController::class, 'create']); //TODO: fix bug where it consider this as an {id} path if placed after that route
+$router->get('/cards/create', [CardController::class, 'create']);
 $router->post('/cards/create', [CardController::class, 'store']);
 $router->get('/cards/{id}', [CardController::class, 'show']);
 $router->get('/cards/{id}/edit', [CardController::class, 'edit']);

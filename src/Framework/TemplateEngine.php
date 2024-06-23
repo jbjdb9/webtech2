@@ -26,10 +26,10 @@ class TemplateEngine
         }
 
         $templateContent = $this->replaceParams($templateContent, $params);
-        $templateContent = $this->evaluateIfExpressions($templateContent, $params);
+        $templateContent = $this->evaluateIfDefinedExpressions($templateContent, $params);
+        $templateContent = $this->evaluateIfUndefinedExpressions($templateContent, $params);
         $templateContent = $this->evaluateIfIsExpressions($templateContent, $params);
         $templateContent = $this->evaluateForElseExpressions($templateContent, $params);
-//        $templateContent = $this->evaluateExpressions($templateContent);
         return $templateContent;
     }
 
@@ -74,27 +74,9 @@ class TemplateEngine
         return $content;
     }
 
-//    protected function evaluateExpressions($content)
-//    {
-//        return preg_replace_callback('/{{ (.*?) }}/', function ($matches) {
-//            $expression = $matches[1];
-//
-//            // Check if the expression is mathematical
-//            if (preg_match('/^([0-9+\-.*\/() ])+$/', $expression)) {
-//                // Sanitize the expression
-//                $expression = preg_replace('/[^0-9+\-.*\/() ]/', '', $expression);
-//
-//                return eval('return ' . $expression . ';');
-//            }
-//
-//            // If the expression is not mathematical, return it as is
-//            return $matches[0];
-//        }, $content);
-//    }
-
-    protected function evaluateIfExpressions($content, $params)
+    protected function evaluateIfDefinedExpressions($content, $params)
     {
-        return preg_replace_callback('/{% if (.*?) is defined %}(.*?){% endif %}/s', function ($matches) use ($params) {
+        return preg_replace_callback('/{% ifdefined (.*?) %}(.*?){% endif %}/s', function ($matches) use ($params) {
             $variable = $matches[1];
             $content = $matches[2];
 
@@ -106,15 +88,31 @@ class TemplateEngine
         }, $content);
     }
 
+    protected function evaluateIfUndefinedExpressions($content, $params)
+    {
+        return preg_replace_callback('/{% ifundefined (.*?) %}(.*?){% endif %}/s', function ($matches) use ($params) {
+            $variable = $matches[1];
+            $content = $matches[2];
+
+            if (!isset($params[$variable])) {
+                return $content;
+            }
+
+            return '';
+        }, $content);
+    }
+
     protected function evaluateIfIsExpressions($content, $params)
     {
-        return preg_replace_callback('/{% if (.*?) == (.*?) %}(.*?){% endif %}/s', function ($matches) use ($params) {
-            $variable = $matches[1];
-            $value = $matches[2];
-            $content = $matches[3];
+        return preg_replace_callback('/{% if (.*?) %}(.*?){% endif %}/s', function ($matches) use ($params) {
+            $conditions = explode(' or ', $matches[1]);
+            $content = $matches[2];
 
-            if (isset($params[$variable]) && $params[$variable] == $value) {
-                return $content;
+            foreach ($conditions as $condition) {
+                list($variable, $value) = explode(' == ', $condition);
+                if (isset($params[$variable]) && $params[$variable] == $value) {
+                    return $content;
+                }
             }
 
             return '';

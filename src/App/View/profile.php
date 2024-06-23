@@ -12,7 +12,9 @@
 
 <form method="POST" action="/profile/buy-premium" onsubmit="return confirm('Are you sure you want to buy premium? It costs about $3.50');">
     <input type="hidden" name="id" value="{{ @@USERID }}">
+    {% ifundefined @@ROLE %}
     <button type="submit" class="btn btn-warning">Buy Premium</button>
+    {% endif %}
 </form>
 <div class="container">
     <div class="row justify-content-center">
@@ -50,7 +52,7 @@
                             <input type="submit" value="Update" class="btn btn-primary">
                         </div>
                     </form>
-                    {% if error is defined %}
+                    {% ifdefined error %}
                     <div class="alert alert-danger mt-4" role="alert">
                     {{ error }}
                     </div>

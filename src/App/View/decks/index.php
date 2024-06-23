@@ -8,7 +8,7 @@
 
 <div class="container">
     <h1 class="display-1">Decks</h1>
-    <a href="/decks/create" class="btn btn-primary mb-3">Add new deck</a>
+    <a href="/decks/create" class="btn btn-primary mb-3">Add New Deck</a>
     <div class="row">
         <table class="table">
             <thead>

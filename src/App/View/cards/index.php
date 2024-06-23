@@ -8,7 +8,9 @@
 
 <div class="container">
     <h1 class="display-1">Cards</h1>
-    <a href="/cards/create" class="btn btn-primary mb-3">Add New Card</a>
+    {% if @@ROLE == Admin %}
+        <a href="/cards/create" class="btn btn-primary mb-3">Add New Card</a>
+    {% endif %}
     <div class="row">
         {% for card in cards %}
         <div class="col-md-2 mb-2">

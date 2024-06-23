@@ -14,7 +14,6 @@ abstract class BaseController
         $this->response = $response;
     }
 
-    //TODO: move authentication logic to framework
     protected function setCommonParams()
     {
         if (isset($_SESSION['role'])) {

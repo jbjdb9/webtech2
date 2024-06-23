@@ -37,7 +37,7 @@ class ProfileController extends BaseController
             if (password_verify($current_password, $currentUser->getPassword())) {
                 if (!empty($username)) {
                     $currentUser->setUsername($username);
-                    $_SESSION['username'] = $username; //TODO: move session logic to separate class
+                    $_SESSION['username'] = $username;
                 }
                 if (!empty($email)) {
                     $currentUser->setEmail($email);

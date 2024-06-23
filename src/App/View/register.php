@@ -29,7 +29,7 @@
                             <a href="/login" class="btn btn-link">Log in instead</a>
                         </div>
                     </form>
-                    {% if error is defined %}
+                    {% ifdefined error %}
                     <div class="alert alert-danger mt-4" role="alert">
                         {{ error }}
                     </div>

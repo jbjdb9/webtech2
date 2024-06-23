@@ -21,7 +21,7 @@
                             <a href="/register" class="btn btn-link">Register account instead</a>
                         </div>
                     </form>
-                    {% if error is defined %}
+                    {% ifdefined error %}
                     <div class="alert alert-danger mt-4" role="alert">
                         {{ error }}
                     </div>
